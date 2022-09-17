@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "426613210580",
+    "project_id": "manejatuscuentas",
+    "storage_bucket": "manejatuscuentas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426613210580:android:900d843f3c8e6ea7e36a41",
+        "android_client_info": {
+          "package_name": "com.nullSA.maneja_tus_cuentas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "426613210580-la305kjroq9p6ag46k7jv3b1j07fg241.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0tgrfGySNtH7oA6ZgV6FGQ6HvI5Mx-VU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "426613210580-la305kjroq9p6ag46k7jv3b1j07fg241.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
