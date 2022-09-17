@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/authentication/login.dart';
-import 'package:maneja_tus_cuentas/Screens/home/home.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
@@ -80,9 +80,21 @@ class _SignUpFormState extends State<SignUpForm> {
 
   final TextEditingController _controllerPassword = TextEditingController();
 
+  final _auth = AuthService();
+  
+  final _users = FirebaseFirestore.instance.collection('users');
+
   Future registerInWithEmailAndPassword() async {
     try {
-      await AuthService().registerWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text, _controllerName.text);
+      await _auth.registerWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text, _controllerName.text);
+
+      final userDoc = _users.doc(_auth.currentUser!.uid);
+
+      final data = {
+        'name': _controllerName.text,
+      };
+
+      await userDoc.set(data);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:maneja_tus_cuentas/Screens/authentication/login.dart';
-import 'package:maneja_tus_cuentas/Screens/authentication/signup.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 import 'Screens/home/home.dart';
 import 'firebase_options.dart';
@@ -29,6 +28,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: kPrimaryColor,
       ),
+      initialRoute: '/',
       home: const WidgetTree(),
     );
   }

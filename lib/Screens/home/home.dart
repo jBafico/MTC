@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
@@ -13,18 +14,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // This widget is the home page of your application. It is stateful, meaning
   
-  final User? user = AuthService().currentUser;
+  final User? _user = AuthService().currentUser;
+
+  String? _userName;
+  
+  final users = FirebaseFirestore.instance.collection('users');
   
   Future signOut() async {
     await AuthService().signOut();
   }
-  
-  Widget _userEmail() {
-    return Text( 'Welcome ${user?.email ?? 'User email not found'}');
-  }
 
   Widget _signOutButton() {
     return IconButton(onPressed: signOut, icon: const Icon(Icons.logout));
+  }
+
+  void _getUserName() async {
+    users.doc(_user!.uid).get().then((DocumentSnapshot doc) => {
+      setState(() {
+        _userName = doc.get('name');
+      })
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserName();
   }
 
   @override
@@ -38,8 +53,8 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: Center(
-          child: _userEmail(),
-        ),
+            child: Text(_userName == null ? 'Username not found' : 'Hi $_userName'),
+          ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedItemColor: kPrimaryColor,

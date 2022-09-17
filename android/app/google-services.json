@@ -29,6 +29,13 @@
             {
               "client_id": "426613210580-la305kjroq9p6ag46k7jv3b1j07fg241.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "426613210580-tft0kggjopq36t5mb3ji94umtquglaiu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nullSA.manejaTusCuentas"
+              }
             }
           ]
         }

@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/authentication/signup.dart';
-import 'package:maneja_tus_cuentas/Screens/home/home.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
@@ -85,9 +83,11 @@ class _LoginFormState extends State<LoginForm> {
 
   final TextEditingController _controllerPassword = TextEditingController();
 
+  final _auth = AuthService();
+
   Future signInWithEmailAndPassword() async {
     try {
-      await AuthService().signInWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text);
+      await _auth.signInWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -164,7 +164,7 @@ class _LoginFormState extends State<LoginForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
-                await signInWithEmailAndPassword().then((value) => Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false));
+                await signInWithEmailAndPassword();//.then((value) => Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false));
               },
               child: Text(
                 "Login".toUpperCase(),
