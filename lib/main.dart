@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
       title: 'MTC',
       theme: ThemeData(
         // This is the theme of your application.
-
         primarySwatch: kPrimaryColor,
       ),
       initialRoute: '/',
