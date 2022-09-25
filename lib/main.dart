@@ -6,6 +6,7 @@ import 'package:maneja_tus_cuentas/constants.dart';
 import 'Screens/home/home.dart';
 import 'firebase_options.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
+import 'Screens/intro/intros.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,11 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       home: const WidgetTree(),
+      routes: {
+        "/intro1" : (context) => const Intros(image: "intro1.jpg", buttonColor: Colors.green,buttonMessage: "Siguiente paso",mainMessage: "Ingresa tus gastos!", auxMessage: "Lleva registro de tus gastos asi estas\ninformado siempre de tu situacion actual.", buttonMessageColor: Colors.white, nextButtonRoute: "/intro2"),
+        "/intro2" : (context) => const Intros(image: "intro2.jpg", buttonColor: Colors.green,buttonMessage: "Siguiente paso",mainMessage: "¡Genera ganancias!", auxMessage: "¡Defini tu presupuesto y alcanza tu metas!", buttonMessageColor: Colors.white,nextButtonRoute: "/intro3"),
+        "/intro3" : (context) => const Intros(image: "intro3.jpg", buttonColor: Colors.green, buttonMessage: "Ingresa ahora!", mainMessage: "Facil de usar", auxMessage: "una manera sencilla y\nrapida de organizar gastos", buttonMessageColor: Colors.white, nextButtonRoute: "/intro1")
+      },
     );
   }
 }
