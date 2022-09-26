@@ -29,9 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: MediaQuery.of(context).size.width,
                 color: kPrimaryColor,
                 child: const Center(
-                  child: Text(
-                    'MTC',
-                    style: TextStyle(color: Colors.white),
+                  child: Image(
+                    image: AssetImage("assets/images/logo_white.png"),
                   ),
                 ),
               ),
