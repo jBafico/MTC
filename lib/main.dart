@@ -27,13 +27,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool firstTime = false;
 
-  Future<Widget> selectFirstScreen() async {
-    bool firstTime = await IsFirstRun.isFirstRun();
-
-    Widget firstIntro = const Intros(image: "intro1.jpg", buttonColor: Colors.green,buttonMessage: "Siguiente paso",mainMessage: "Ingresa tus gastos!", auxMessage: "Lleva registro de tus gastos asi estas\ninformado siempre de tu situacion actual.", buttonMessageColor: Colors.white, nextButtonRoute: "/intro2");
-
-    return firstTime ? firstIntro : const WidgetTree();
-  }
 
   _MyAppState() {
     IsFirstRun.isFirstRun()

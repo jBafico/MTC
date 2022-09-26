@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   // This widget is the home page of your application. It is stateful, meaning
 
 
-  int _currentScreen = 3;
+  int _currentScreen = 0;
 
   final List<Widget> _screens = [
     const HomeScreen(),
