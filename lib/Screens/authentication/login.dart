@@ -17,49 +17,51 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SizedBox(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.40,
-              width: MediaQuery.of(context).size.width,
-              color: kPrimaryColor,
-              child: const Center(
-                child: Text(
-                  'MTC',
-                  style: TextStyle(color: Colors.white),
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.40,
+                width: MediaQuery.of(context).size.width,
+                color: kPrimaryColor,
+                child: const Center(
+                  child: Text(
+                    'MTC',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      "Welcome!",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                    ),
-                    const SizedBox(height: defaultPadding * 2),
-                    Row(
-                      children: const [
-                        Spacer(),
-                        Expanded(
-                          flex: 8,
-                          child: LoginForm(),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
-                  ],
+              SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        "Welcome!",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                      const SizedBox(height: defaultPadding * 2),
+                      Row(
+                        children: const [
+                          Spacer(),
+                          Expanded(
+                            flex: 8,
+                            child: LoginForm(),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

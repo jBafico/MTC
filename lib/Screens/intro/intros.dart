@@ -21,13 +21,14 @@ class Intros extends StatelessWidget {
     var secondaryTextStyle = const TextStyle(fontSize: 15,color: Colors.grey);
 
     return Scaffold(
+    backgroundColor: Colors.white,
         body: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         //TODO descargar imagen en formato svg
         Container(
             padding: const EdgeInsets.all(100),
-            child: Image.asset("../assets/images/$image", fit: BoxFit.cover)),
+            child: Image.asset("assets/images/$image", fit: BoxFit.cover)),
         Column(
           children: [
             Container(

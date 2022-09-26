@@ -17,42 +17,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SizedBox(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.20,
-              width: MediaQuery.of(context).size.width,
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      "Welcome!",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                    ),
-                    const SizedBox(height: defaultPadding * 2),
-                    Row(
-                      children: const [
-                        Spacer(),
-                        Expanded(
-                          flex: 8,
-                          child: SignUpForm(),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
-                  ],
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.20,
+                width: MediaQuery.of(context).size.width,
+              ),
+              SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        "Welcome!",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                      ),
+                      const SizedBox(height: defaultPadding * 2),
+                      Row(
+                        children: const [
+                          Spacer(),
+                          Expanded(
+                            flex: 8,
+                            child: SignUpForm(),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
