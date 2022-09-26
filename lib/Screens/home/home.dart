@@ -1,32 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:maneja_tus_cuentas/Services/auth.dart';
-import 'package:maneja_tus_cuentas/constants.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+import '../../Services/auth.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
-  // This widget is the home page of your application. It is stateful, meaning
-  
+class _HomeScreenState extends State<HomeScreen> {
+
   final User? _user = AuthService().currentUser;
 
   String? _userName;
-  
-  final users = FirebaseFirestore.instance.collection('users');
-  
-  Future signOut() async {
-    await AuthService().signOut();
-  }
 
-  Widget _signOutButton() {
-    return IconButton(onPressed: signOut, icon: const Icon(Icons.logout));
-  }
+  final users = FirebaseFirestore.instance.collection('users');
 
   void _getUserName() async {
     users.doc(_user!.uid).get().then((DocumentSnapshot doc) => {
@@ -44,38 +35,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('MTC home'),
-          actions: [
-            _signOutButton(),
-          ],
-        ),
-        body: Center(
-            child: Text(_userName == null ? 'Username not found' : 'Hi $_userName'),
-          ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: kPrimaryColor,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: 'History',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.query_stats),
-              label: 'Statistics',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: 'Profile',
-            ),
-          ],
-        ));
+    return Center(
+      child: Text(_userName == null ? 'Loading' : 'Hi $_userName'),
+    );
   }
 }

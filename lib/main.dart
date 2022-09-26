@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:maneja_tus_cuentas/Screens/authentication/login.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
-import 'Screens/home/home.dart';
+import 'Screens/home/home_page.dart';
 import 'firebase_options.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'Screens/intro/intros.dart';
