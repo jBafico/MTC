@@ -27,12 +27,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool firstTime = false;
 
-
   _MyAppState() {
     IsFirstRun.isFirstRun()
         .then((value) => setState(() => {firstTime = value}));
   }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -45,42 +43,8 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: {
         "/": (context) => firstTime
-            ? const Intros(
-                image: "intro1.jpg",
-                buttonColor: Colors.green,
-                buttonMessage: "Siguiente paso",
-                mainMessage: "Ingresa tus gastos!",
-                auxMessage:
-                    "Lleva registro de tus gastos asi estas\ninformado siempre de tu situacion actual.",
-                buttonMessageColor: Colors.white,
-                nextButtonRoute: "/intro2")
+            ? const Intros()
             : const WidgetTree(),
-        "/intro1": (context) => const Intros(
-            image: "intro1.jpg",
-            buttonColor: Colors.green,
-            buttonMessage: "Siguiente paso",
-            mainMessage: "Ingresa tus gastos!",
-            auxMessage:
-                "Lleva registro de tus gastos asi estas\ninformado siempre de tu situacion actual.",
-            buttonMessageColor: Colors.white,
-            nextButtonRoute: "/intro2"),
-        "/intro2": (context) => const Intros(
-            image: "intro2.jpg",
-            buttonColor: Colors.green,
-            buttonMessage: "Siguiente paso",
-            mainMessage: "¡Genera ganancias!",
-            auxMessage: "¡Defini tu presupuesto y alcanza tu metas!",
-            buttonMessageColor: Colors.white,
-            nextButtonRoute: "/intro3"),
-        "/intro3": (context) => const Intros(
-            image: "intro3.jpg",
-            buttonColor: Colors.green,
-            buttonMessage: "Ingresa ahora!",
-            mainMessage: "Facil de usar",
-            auxMessage: "una manera sencilla y\nrapida de organizar gastos",
-            buttonMessageColor: Colors.white,
-            nextButtonRoute: "/widgetTree"),
-
         "/widgetTree" : (context) => const WidgetTree()
       },
     );
