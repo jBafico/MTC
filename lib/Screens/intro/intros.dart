@@ -186,8 +186,8 @@ class IntrosState extends State<Intros> {
       ),
 
       // Scroll behavior
-      autoScroll: false,
-      loopAutoScroll: false,
+      isAutoScroll: false,
+      isLoopAutoScroll: false,
       curveScroll: Curves.bounceIn,
     );
   }
