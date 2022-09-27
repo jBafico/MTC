@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         children: [
           Text(_userName == null ? 'Loading' : 'Hi $_userName'),
-          Align(alignment: Alignment.bottomRight,child: TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievmentsSection())), child: const Text("Ver mas", style: TextStyle(color: Colors.green))))
+          TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievmentsSection())), child: const Text("Ver mas", style: TextStyle(color: Colors.green)))
         ],
 
       ),
