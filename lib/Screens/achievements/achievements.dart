@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../upper_menu.dart';
+import '../Components/upper_menu.dart';
 
 class Achievements extends StatelessWidget {
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../upper_menu.dart';
+import '../Components/Cards/card.dart';
+import '../Components/upper_menu.dart';
 
 class Notifications extends StatelessWidget {
   const Notifications({super.key});
@@ -12,7 +13,7 @@ class Notifications extends StatelessWidget {
         length: upperMenu.getLength(),
         child: Scaffold(
           appBar: upperMenu.buildBar(context),
-          body: Image.asset("assets/images/logo_white.png")
+          body: CardBuilder.notification(primaryString: "Primary string", secondaryString: "Secondary string").build()
         ));
   }
 }
