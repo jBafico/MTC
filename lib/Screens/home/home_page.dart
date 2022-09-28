@@ -38,14 +38,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _notificationsButton() {
-    return IconButton(icon: const Icon(Icons.notifications), padding: const EdgeInsets.symmetric(horizontal: 20), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createNotificationSection())),
+    return IconButton(icon: const Icon(Icons.notifications), padding: const EdgeInsets.symmetric(horizontal: 20), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Notifications())),
     );
-
   }
 
-  Widget _createNotificationSection(){
-    return const Achievements(title: "Tus notis", screenTitle1: "En progreso", screenTitle2: "Listo");
-  }
+// AppBar _appBarHandler(){
+//     AppBar appBar = AppBar();
+//
+//     if(_currentScreen == 1){
+//       //
+//     }
+//     else {
+//
+//     }
+//
+//     return appBar;
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +66,7 @@ class _HomePageState extends State<HomePage> {
             _signOutButton(),
           ],
         ),
+        //appBar: _appBarHandler(),
         body: _screens[_currentScreen],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
