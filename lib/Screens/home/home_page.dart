@@ -3,8 +3,11 @@ import 'package:maneja_tus_cuentas/Screens/home/history.dart';
 import 'package:maneja_tus_cuentas/Screens/home/home.dart';
 import 'package:maneja_tus_cuentas/Screens/home/profile.dart';
 import 'package:maneja_tus_cuentas/Screens/home/statistics.dart';
+import 'package:maneja_tus_cuentas/Screens/notifications/notifications.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
+
+import '../achievements/achievements.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,7 +34,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _signOutButton() {
-    return IconButton(onPressed: signOut, icon: const Icon(Icons.logout));
+    return IconButton(onPressed: signOut, icon: const Icon(Icons.logout),);
+  }
+
+  Widget _notificationsButton() {
+    return IconButton(icon: const Icon(Icons.notifications), padding: const EdgeInsets.symmetric(horizontal: 20), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createNotificationSection())),
+    );
+
+  }
+
+  Widget _createNotificationSection(){
+    return const Achievements(title: "Tus notis", screenTitle1: "En progreso", screenTitle2: "Listo");
   }
 
   @override
@@ -41,6 +54,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: const Text('MTC home'),
           actions: [
+            _notificationsButton(),
             _signOutButton(),
           ],
         ),

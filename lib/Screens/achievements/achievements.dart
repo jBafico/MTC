@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Achievments extends StatelessWidget {
+class Achievements extends StatelessWidget {
 
   final int _cantTabs = 2;
 
-  const Achievments({Key? key, required this.title, required this.screenTitle1, required this.screenTitle2}) : super(key: key);
+  const Achievements({Key? key, required this.title, required this.screenTitle1, required this.screenTitle2}) : super(key: key);
   final String title, screenTitle1, screenTitle2;
 
 

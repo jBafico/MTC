@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:maneja_tus_cuentas/Screens/achievements/achievments.dart';
+import 'package:maneja_tus_cuentas/Screens/achievements/achievements.dart';
 
 import '../../Services/auth.dart';
 
@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _getUserName();
   }
 
-  Widget _createAchievmentsSection(){
-    return const Achievments(title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
+  Widget _createAchievementsSection(){
+    return const Achievements(title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
   }
 
   @override
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         children: [
           Text(_userName == null ? 'Loading' : 'Hi $_userName'),
-          TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievmentsSection())), child: const Text("Ver mas", style: TextStyle(color: Colors.green)))
+          TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievementsSection())), child: const Text("Ver mas", style: TextStyle(color: Colors.green)))
         ],
 
       ),
