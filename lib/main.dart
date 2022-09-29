@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:is_first_run/is_first_run.dart';
 import 'package:flutter/material.dart';

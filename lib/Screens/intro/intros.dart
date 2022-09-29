@@ -148,16 +148,18 @@ class IntrosState extends State<Intros> {
       // Skip button
       renderSkipBtn: renderSkipBtn(),
       skipButtonStyle: myButtonStyle(),
+      skipButtonKey: const Key("skipButtonKey"),
 
       // Next button
       renderNextBtn: renderNextBtn(),
       onNextPress: onNextPress,
       nextButtonStyle: myButtonStyle(),
-
+      nextButtonKey: const Key("nextButtonKey"),
       // Done button
       renderDoneBtn: renderDoneBtn(),
       onDonePress: onDonePress,
       doneButtonStyle: myButtonStyle(),
+      doneButtonKey: const Key("doneButtonKey"),
 
       // Indicator
       indicatorConfig: IndicatorConfig(
