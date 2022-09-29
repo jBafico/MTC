@@ -123,14 +123,16 @@ class _LoginFormState extends State<LoginForm> {
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
+
           TextField(
-            key: const Key("EmailRegister"),
+            key: const Key("EmailBox"),
             controller: _controllerEmail,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
             ),
             cursorColor: kPrimaryColor,
           ),
+
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
@@ -139,7 +141,9 @@ class _LoginFormState extends State<LoginForm> {
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
+
           TextField(
+            key: const Key("passwordBox"),
             controller: _controllerPassword,
             obscureText: _obscureText,
             cursorColor: kPrimaryColor,
@@ -156,6 +160,7 @@ class _LoginFormState extends State<LoginForm> {
           Hero(
             tag: "login_btn",
             child: ElevatedButton(
+              key: const Key("loginButton"),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
