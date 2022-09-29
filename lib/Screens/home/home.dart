@@ -40,16 +40,75 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return
+      Padding(
+        padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget> [
+            Text(
+              'Bienvenido',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
+              )
+            ),
+            SizedBox(height: 10),
+            Text(
+              _userName == null ? 'Loading' : '$_userName',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget> [
+                Text(
+                  'Tus ahorros',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      'Ver Todo',
+                      style: TextStyle(
+                        color: Colors.green
+                      )
+                    )
+                ),
+              ],
+            ),
 
-        children: [
-          Text(_userName == null ? 'Loading' : 'Hi $_userName'),
-          TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievementsSection())), child: const Text("Ver mas", style: TextStyle(color: Colors.green)))
-        ],
-
-      ),
-    );
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget> [
+                Text(
+                  'Tus Metas',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                TextButton(
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievementsSection())),
+                    child: const Text(
+                        'Ver Más +',
+                        style: TextStyle(
+                            color: Colors.green
+                        )
+                    )
+                )
+              ],
+            ),
+          ],
+        ),
+      );
   }
 }
