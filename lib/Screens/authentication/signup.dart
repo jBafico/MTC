@@ -185,7 +185,13 @@ class _SignUpFormState extends State<SignUpForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
-                await registerInWithEmailAndPassword().then((value) => Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false));
+                await registerInWithEmailAndPassword().then((value) => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) {
+                        return const RegisterConfirmation();
+                      })
+                ));
               },
               child: Text(
                 "Sign Up".toUpperCase(),
@@ -243,3 +249,58 @@ class AlreadyHaveAnAccountCheck extends StatelessWidget {
     );
   }
 }
+
+class RegisterConfirmation extends StatelessWidget {
+  const RegisterConfirmation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var mainTextStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
+    var secondaryTextStyle = const TextStyle(fontSize: 14,color: Colors.grey);
+
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Column(
+              children: [
+                Container(
+                  height: constraints.maxHeight / 4,
+                ),
+                Column(
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.all(25),
+                        /* postfix exclamation mark (!) takes the expression on the left and casts it to its underlying non-nullable type. So it changes:*/
+                        child: Text("Cuenta creada",
+                            textAlign: TextAlign.center, style: mainTextStyle)),
+                    Container(
+                      padding: const EdgeInsets.all(25),
+                      child: Text("Tu cuenta fue creada con exito.\n Presiona continuar para seguir utilizando la app", textAlign: TextAlign.center,style: secondaryTextStyle),
+                    ),
+                    Container(
+                        padding: const EdgeInsets.all(50),
+                        child: Image.asset("assets/images/account_created.jpg", fit: BoxFit.cover)),
+                  ],
+                ),
+
+                ElevatedButton(
+                    onPressed: () =>
+                        Navigator.popAndPushNamed(context, "/widgetTree"),
+                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateColor.resolveWith((states) => Colors.green),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          )),
+                    ),
+                    child: const Text("Continuar")),
+              ],
+            );
+          },
+        ));
+  }
+}
+
