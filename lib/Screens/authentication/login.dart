@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: kPrimaryColor,
                 child: const Center(
                   child: Image(
+                    key: Key("logo"),
                     image: AssetImage("assets/images/logo_white.png"),
                   ),
                 ),
