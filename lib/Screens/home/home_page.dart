@@ -58,7 +58,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return  Scaffold(
+        key: const Key("HomePageScaffold"),
         appBar: AppBar(
           title: const Text('MTC home'),
           actions: [
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> {
         //appBar: _appBarHandler(),
         body: _screens[_currentScreen],
         bottomNavigationBar: BottomNavigationBar(
+          key: const Key("BottomBar"),
           type: BottomNavigationBarType.fixed,
           selectedItemColor: kPrimaryColor,
           currentIndex: _currentScreen,

@@ -2,19 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:maneja_tus_cuentas/main.dart' as app;
-
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   group('App Test', () {
-    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-
-    //LOGIN TEST
-    //test de integracion usa testeos de widget
-    //IMportante, la primera vez corremos main, luego el metodo
-    testWidgets("full app test", (tester) async {
-      //me aseguro que el flutter driver este prendido, ejecuta un comando tras otro
+    //Usuario que entra a la aplicacion
+    testWidgets("login", (tester) async {
       await app.main();
-      await tester.pumpAndSettle();// me aseguro que no se actualizan elementos de la UI
+      await tester.pumpAndSettle();
       var interval = const Duration(seconds: 3);
 
       var nextKey = find.byKey(const Key("nextButtonKey"));
@@ -27,16 +22,40 @@ void main() {
       await tester.tap(doneKey);
       await tester.pumpAndSettle();
       await tester.pump(interval);
-      /*
+
+
       var emailBox = find.byKey(const Key("emailBox") );
-      await tester.tap(emailBox);
+      await tester.pump();
       await tester.enterText(emailBox, "sranucci@itba.edu.ar");
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
       var passwordBox = find.byKey(const Key("passwordBox"));
-      await tester.tap(passwordBox);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
       await tester.enterText(passwordBox, "ranabobo");
-      await tester.press(find.byKey(const Key("loginButton")));
-      await tester.pump(interval);
-       */
+      await tester.pump();
+      await tester.tapAt(Offset.zero);
+      await tester.pump();
+      await tester.tap(find.byKey(const Key("loginButton")));
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      await tester.pump();
+
+      await tester.pump(const Duration(seconds: 30));
+
     });
+
+    /*
+    testWidgets("homePage navigation", (tester) async {
+      await Firebase.initializeApp()
+      var interval = const Duration(seconds: 4);
+      await tester.pumpWidget(const HomePage());
+      await tester.pump(interval);
+
+    }
+    );
+
+     */
+
   });
 }

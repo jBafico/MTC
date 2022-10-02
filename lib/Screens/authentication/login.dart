@@ -125,7 +125,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
 
           TextField(
-            key: const Key("EmailBox"),
+            key: const Key("emailBox"),
             controller: _controllerEmail,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),

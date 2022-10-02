@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _createAchievementsSection(){
-    return const Achievements(title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
+    return Achievements(title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
   }
 
   @override
@@ -46,17 +46,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget> [
-            Text(
+            const Text(
               'Bienvenido',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 14.0,
               )
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               _userName == null ? 'Loading' : '$_userName',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w600,
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget> [
-                Text(
+                const Text(
                   'Tus ahorros',
                   style: TextStyle(
                     color: Colors.black,
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 TextButton(
                     onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       'Ver Todo',
                       style: TextStyle(
                         color: Colors.green
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget> [
-                Text(
+                const Text(
                   'Tus Metas',
                   style: TextStyle(
                     color: Colors.black,

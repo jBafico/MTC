@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CardBuilder {
   Color? color = Colors.grey;
-  String primaryString = "", secondaryString = "";
+  String primaryString, secondaryString;
   String? moneyString;
   CircularProgressIndicator? circularProgressIndicator;
   ImageIcon? imageIcon;
@@ -10,9 +10,7 @@ class CardBuilder {
   // no usar este constructor fuera de esta clase
   CardBuilder({this.color, required this.primaryString, required this.secondaryString, this.moneyString, this.circularProgressIndicator, this.imageIcon});
 
-  CardBuilder.notification({Color? color, required String primaryString, required String secondaryString, ImageIcon? imageIcon}) {
-     CardBuilder(color: color, primaryString: primaryString, secondaryString: secondaryString);
-  }
+  CardBuilder.notification({Color? color, required String primaryString, required String secondaryString, ImageIcon? imageIcon}) : this(color: color, primaryString: primaryString, secondaryString: secondaryString);
 
   Card build(){
     return Card(
