@@ -21,13 +21,14 @@ class DatabaseService {
 
   // Update budget from budget collection inside the user document if the budget exists or create a new one
   Future updateBudget(Budget budget) async {
-    return await userCollection.doc(uid).collection('budgets').doc(budget.name).set({
-      'name': budget.name,
-      'description': budget.description,
-      'amount': budget.amount,
-      'spent': budget.spent,
-      'completed': budget.completed,
-    });
+
+      return await userCollection.doc(uid).collection('budgets').doc(budget.name).set({
+        'name': budget.name,
+        'description': budget.description,
+        'amount': budget.amount,
+        'spent': budget.spent,
+        'completed': budget.completed,
+      });
   }
 
   // Remove budget from budget collection inside the user document
@@ -58,8 +59,8 @@ class DatabaseService {
       return Budget(
         name: doc.get('name') ?? '',
         description: doc.get('description') ?? '',
-        amount: doc.get('amount') ?? 0,
-        spent: doc.get('spent') ?? 0,
+        amount: doc.get('amount') ?? 0.0,
+        spent: doc.get('spent') ?? 0.0,
         completed: doc.get('completed') ?? false,
       );
     }).toList();

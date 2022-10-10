@@ -8,14 +8,15 @@ import 'package:maneja_tus_cuentas/Services/database.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
 class CreateBudget extends StatefulWidget {
-  const CreateBudget({Key? key}) : super(key: key);
+  const CreateBudget({Key? key, this.budget}) : super(key: key);
+
+  final Budget? budget;
 
   @override
   State<CreateBudget> createState() => _CreateBudgetState();
 }
 
 class _CreateBudgetState extends State<CreateBudget> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,20 +36,22 @@ class _CreateBudgetState extends State<CreateBudget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        "Crear Presupuesto",
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 36),
+                      Text(
+                        widget.budget == null
+                            ? "Crear Presupuesto"
+                            : "Editar Presupuesto",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 36),
                       ),
                       const SizedBox(height: defaultPadding * 2),
                       Row(
-                        children: const [
-                          Spacer(),
+                        children: [
+                          const Spacer(),
                           Expanded(
                             flex: 8,
-                            child: BudgetForm(),
+                            child: BudgetForm(budget: widget.budget),
                           ),
-                          Spacer(),
+                          const Spacer(),
                         ],
                       ),
                     ],
@@ -64,9 +67,9 @@ class _CreateBudgetState extends State<CreateBudget> {
 }
 
 class BudgetForm extends StatefulWidget {
-  const BudgetForm({
-    Key? key,
-  }) : super(key: key);
+  const BudgetForm({Key? key, this.budget}) : super(key: key);
+
+  final Budget? budget;
 
   @override
   State<BudgetForm> createState() => _BudgetFormState();
@@ -75,18 +78,34 @@ class BudgetForm extends StatefulWidget {
 class _BudgetFormState extends State<BudgetForm> {
   // Initially password is obscure
 
-  final TextEditingController _controllerName = TextEditingController();
+  TextEditingController _controllerName = TextEditingController();
 
-  final TextEditingController _controllerDescription = TextEditingController();
+  TextEditingController _controllerDescription = TextEditingController();
 
   // Amount of money, number controller
   final TextEditingController _controllerAmount = TextEditingController();
 
-  final DatabaseService _databaseService = DatabaseService(uid: AuthService().currentUser!.uid);
+  TextEditingController _controllerTotalAmountEdition = TextEditingController();
 
+
+  final DatabaseService _databaseService =
+      DatabaseService(uid: AuthService().currentUser!.uid);
 
   @override
   Widget build(BuildContext context) {
+    _controllerName = TextEditingController(
+        text:
+            widget.budget == null ? _controllerName.text : widget.budget!.name);
+    _controllerDescription = TextEditingController(
+        text: widget.budget == null
+            ? _controllerDescription.text
+            : widget.budget!.description);
+
+    _controllerTotalAmountEdition = TextEditingController(
+        text: widget.budget == null
+            ? _controllerTotalAmountEdition.text
+            : "${widget.budget!.amount}");
+
     return Form(
       child: Column(
         children: [
@@ -121,12 +140,37 @@ class _BudgetFormState extends State<BudgetForm> {
             cursorColor: kPrimaryColor,
           ),
           // Amount of money
+
+          widget.budget == null
+              ? Container()
+              : Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
+                  child: const Text(
+                    'Presupuesto',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ),
+
+          widget.budget == null
+              ? Container()
+              : TextField(
+                  controller: _controllerTotalAmountEdition,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    suffixIcon: Icon(Icons.attach_money),
+                  ),
+                  cursorColor: kPrimaryColor,
+                ),
+          const SizedBox(height: defaultPadding),
+
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
-            child: const Text(
-              'Presupuesto',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+            child: Text(
+              widget.budget == null ? 'Presupuesto' : 'Monto a destinar',
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
           TextField(
@@ -139,6 +183,7 @@ class _BudgetFormState extends State<BudgetForm> {
             cursorColor: kPrimaryColor,
           ),
           const SizedBox(height: defaultPadding),
+
           Hero(
             tag: "create_btn",
             child: ElevatedButton(
@@ -152,16 +197,48 @@ class _BudgetFormState extends State<BudgetForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
+                if (widget.budget == null) {
+                  await _databaseService
+                      .updateBudget(
+                        Budget(
+                          name: _controllerName.text,
+                          description: _controllerDescription.text,
+                          amount: double.parse(_controllerAmount.text),
+                          completed: false,
+                          spent: 0,
+                        ),
+                      )
+                      .then((value) => Navigator.pop(context));
+                } else {
+                  await _databaseService.removeBudget(widget.budget!);
 
-                await _databaseService.updateBudget(
-                  Budget(
-                    name: _controllerName.text,
-                    description: _controllerDescription.text,
-                    amount: double.parse(_controllerAmount.text),
-                    completed: false,
-                    spent: 0,
-                  ),
-                ).then((value) => Navigator.pop(context));
+                  try {
+                    widget.budget!
+                        .updateSpent(double.parse(_controllerAmount.text));
+                  } on FormatException {
+                    // TODO: manejo de errores
+                  }
+
+
+                  try {
+                    widget.budget!.amount = double.parse(_controllerTotalAmountEdition.text);
+                  } on FormatException {
+                    // TODO: manejo de errores
+                  }
+
+                  // Por si me paso de amount
+                  if (widget.budget!.spent >= widget.budget!.amount) {
+                    widget.budget!.completed = true;
+                    widget.budget!.spent = widget.budget!.amount;
+                  }
+
+                  widget.budget!.name = _controllerName.text;
+                  widget.budget!.description = _controllerDescription.text;
+
+                  await _databaseService
+                      .updateBudget(widget.budget!)
+                      .then((value) => Navigator.pop(context));
+                }
               },
               child: const Text(
                 "Guardar",
@@ -178,9 +255,11 @@ class _BudgetFormState extends State<BudgetForm> {
                     borderRadius: BorderRadius.circular(18.0),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade50),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.grey.shade50),
                 elevation: MaterialStateProperty.all<double>(0),
-                side: MaterialStateProperty.all<BorderSide>(const BorderSide(color: Colors.black)),
+                side: MaterialStateProperty.all<BorderSide>(
+                    const BorderSide(color: Colors.black)),
                 minimumSize: MaterialStateProperty.all(
                     Size(MediaQuery.of(context).size.width, 40)),
               ),

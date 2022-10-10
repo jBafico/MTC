@@ -8,8 +8,8 @@ class Budget {
 
   Budget({required this.name, required this.description, required this.amount,required this.spent, required this.completed});
 
-  updateSpent(double newSpent){
-    spent = newSpent;
+  updateSpent(double newAmount){
+    spent = (spent + newAmount > amount) ? amount : spent + newAmount;
 
     if(spent >= amount){
       completed = true;

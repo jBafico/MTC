@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Budget.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
-
-
 class BudgetCard extends StatelessWidget {
   final Budget budget;
 
@@ -27,7 +25,11 @@ class BudgetCard extends StatelessWidget {
               alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Icon(Icons.airplanemode_on_sharp, size: 40, color: kPrimaryColor,),
+                child: Icon(
+                  Icons.account_balance_outlined,
+                  size: 40,
+                  color: kPrimaryColor,
+                ),
               ),
             ),
           ),
@@ -40,12 +42,22 @@ class BudgetCard extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-                    child: Text(budget.name, style: const TextStyle(fontSize: 20, color: kPrimaryColor),),
+                    child: Text(
+                      budget.name,
+                      style:
+                          const TextStyle(fontSize: 20, color: kPrimaryColor),
+                    ),
                   ),
                   Text(budget.description),
                 ],
               ),
             ),
+          ),
+          Text(
+            budget.completed
+                ? ""
+                : "${budget.spent.floor()} / ${budget.amount.floor()}",
+            style: const TextStyle(color: kPrimaryColor),
           ),
           // circular progress bar with the percentage in the middle
           // Aligned right
@@ -59,7 +71,7 @@ class BudgetCard extends StatelessWidget {
                       height: 50,
                       width: 50,
                       child: CircularProgressIndicator(
-                        value: budget.spent / budget.amount + 1,
+                        value: budget.spent / budget.amount,
                         strokeWidth: 5,
                       ),
                     ),
@@ -71,7 +83,7 @@ class BudgetCard extends StatelessWidget {
                       width: 50,
                       child: Center(
                         child: Text(
-                          "${((budget.spent / budget.amount) * 100).toStringAsFixed(0)}%",
+                          "${((budget.spent / budget.amount) * 100).floor().toStringAsFixed(0)}%",
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -85,7 +97,6 @@ class BudgetCard extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );

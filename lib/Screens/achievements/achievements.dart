@@ -46,9 +46,8 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (!snapshot.data![index].completed) {
                               return GestureDetector(
-                                onTap: () {
-                                  _databaseService
-                                      .removeBudget(snapshot.data![index]);
+                                onLongPress: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: snapshot.data![index])));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -60,6 +59,8 @@ class _AchievementsState extends State<Achievements> {
                               return Container();
                             }
                           });
+                    } else if (snapshot.hasError) {
+                      return Text("$snapshot.error");
                     } else {
                       return const Center(child: CircularProgressIndicator());
                     }

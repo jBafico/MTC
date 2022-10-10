@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/achievements/achievements.dart';
+import 'package:maneja_tus_cuentas/Services/database.dart';
 
+import '../../Model/Budget.dart';
 import '../../Services/auth.dart';
+import '../Components/Cards/budget_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,15 +16,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  final User? _user = AuthService().currentUser;
+  final DatabaseService _databaseService = DatabaseService(uid: AuthService().currentUser!.uid);
 
   String? _userName;
 
   final users = FirebaseFirestore.instance.collection('users');
 
   void _getUserName() async {
-    users.doc(_user!.uid).get().then((DocumentSnapshot doc) => {
+    users.doc(AuthService().currentUser!.uid).get().then((DocumentSnapshot doc) => {
       setState(() {
         _userName = doc.get('name');
       })
@@ -104,9 +106,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.green
                         )
                     )
-                )
+                ),
               ],
             ),
+            StreamBuilder(
+                stream: _databaseService.budgets,
+                builder: (context, AsyncSnapshot<List<Budget>> snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: snapshot.data!.isNotEmpty ?
+                      BudgetCard(budget: snapshot.data![0]) :
+                          Container(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("$snapshot.error");
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                }),
           ],
         ),
       );
