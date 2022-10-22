@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Budget.dart';
-import 'package:maneja_tus_cuentas/Screens/authentication/login.dart';
+import 'package:maneja_tus_cuentas/Model/Category.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
@@ -22,44 +20,36 @@ class _CreateBudgetState extends State<CreateBudget> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        child: SizedBox(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                width: MediaQuery.of(context).size.width,
-              ),
-              SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        widget.budget == null
-                            ? "Crear Presupuesto"
-                            : "Editar Presupuesto",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 36),
-                      ),
-                      const SizedBox(height: defaultPadding * 2),
-                      Row(
-                        children: [
-                          const Spacer(),
-                          Expanded(
-                            flex: 8,
-                            child: BudgetForm(budget: widget.budget),
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ],
-                  ),
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height * (widget.budget == null ? 0.1 : 0.05),
+              width: MediaQuery.of(context).size.width,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  widget.budget == null
+                      ? "Crear Presupuesto"
+                      : "Editar Presupuesto",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 36),
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(height: defaultPadding * 2),
+                Row(
+                  children: [
+                    const Spacer(),
+                    Expanded(
+                      flex: 8,
+                      child: BudgetForm(budget: widget.budget),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -87,6 +77,8 @@ class _BudgetFormState extends State<BudgetForm> {
 
   TextEditingController _controllerTotalAmountEdition = TextEditingController();
 
+  // Category
+  Category? _currentCategory;
 
   final DatabaseService _databaseService =
       DatabaseService(uid: AuthService().currentUser!.uid);
@@ -106,8 +98,13 @@ class _BudgetFormState extends State<BudgetForm> {
             ? _controllerTotalAmountEdition.text
             : "${widget.budget!.amount}");
 
+    _currentCategory = widget.budget == null
+        ? null
+        : widget.budget!.category;
+
     return Form(
       child: Column(
+
         children: [
           Container(
             alignment: Alignment.centerLeft,
@@ -139,6 +136,8 @@ class _BudgetFormState extends State<BudgetForm> {
             ),
             cursorColor: kPrimaryColor,
           ),
+
+
           // Amount of money
 
           widget.budget == null
@@ -167,7 +166,7 @@ class _BudgetFormState extends State<BudgetForm> {
 
           Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
+            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 0, 4.0),
             child: Text(
               widget.budget == null ? 'Presupuesto' : 'Monto a destinar',
               style: const TextStyle(color: Colors.grey, fontSize: 12),
@@ -183,6 +182,44 @@ class _BudgetFormState extends State<BudgetForm> {
             cursorColor: kPrimaryColor,
           ),
           const SizedBox(height: defaultPadding),
+
+          // Dropdown menu with categories
+          Container(
+            padding: const EdgeInsets.fromLTRB(4.0, 0, 0, 4.0),
+            alignment: Alignment.centerLeft,
+            child: DropdownButton<Category>(
+              hint: const Text('Agregar categoria'),
+              value: _currentCategory,
+              icon: const Icon(Icons.add),
+              iconSize: 24,
+              elevation: 16,
+              style: const TextStyle(color: kPrimaryColor),
+              underline: Container(
+                height: 2,
+                color: kPrimaryColor,
+              ),
+              onChanged: (Category? newValue) {
+                setState(() {
+                  _currentCategory = newValue!;
+                });
+              },
+              items:
+              Category.categories.map<DropdownMenuItem<Category>>((Category value) {
+                return DropdownMenuItem<Category>(
+                  value: value,
+                  child: Row(
+                    children: [
+                      Icon(value.icon),
+                      const SizedBox(width: 10),
+                      Text(value.name),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+
 
           Hero(
             tag: "create_btn",
@@ -206,6 +243,7 @@ class _BudgetFormState extends State<BudgetForm> {
                           amount: double.parse(_controllerAmount.text),
                           completed: false,
                           spent: 0,
+                          category: _currentCategory?? Category.defaultCategory,
                         ),
                       )
                       .then((value) => Navigator.pop(context));
@@ -219,9 +257,9 @@ class _BudgetFormState extends State<BudgetForm> {
                     // TODO: manejo de errores
                   }
 
-
                   try {
-                    widget.budget!.amount = double.parse(_controllerTotalAmountEdition.text);
+                    widget.budget!.amount =
+                        double.parse(_controllerTotalAmountEdition.text);
                   } on FormatException {
                     // TODO: manejo de errores
                   }

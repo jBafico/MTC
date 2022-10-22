@@ -2,7 +2,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maneja_tus_cuentas/Model/Budget.dart';
+import 'package:maneja_tus_cuentas/Model/Category.dart';
 import 'package:maneja_tus_cuentas/Model/UserData.dart';
+import 'package:maneja_tus_cuentas/constants.dart';
 
 
 class DatabaseService {
@@ -28,6 +30,7 @@ class DatabaseService {
         'amount': budget.amount,
         'spent': budget.spent,
         'completed': budget.completed,
+        'category': budget.category,
       });
   }
 
@@ -62,6 +65,7 @@ class DatabaseService {
         amount: doc.get('amount') ?? 0.0,
         spent: doc.get('spent') ?? 0.0,
         completed: doc.get('completed') ?? false,
+        category: Category(name: doc.get('category')),
       );
     }).toList();
   }

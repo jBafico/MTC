@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Budget.dart';
+import 'package:maneja_tus_cuentas/Model/Category.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
 class BudgetCard extends StatelessWidget {
@@ -19,14 +20,14 @@ class BudgetCard extends StatelessWidget {
       elevation: 0,
       child: Row(
         children: <Widget>[
-          const SizedBox(
+          SizedBox(
             height: 80,
             child: Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Icon(
-                  Icons.account_balance_outlined,
+                  budget.category.icon,
                   size: 40,
                   color: kPrimaryColor,
                 ),
