@@ -11,11 +11,12 @@ class MovementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
       elevation: 0,
       child: Row(
         children: <Widget>[
-           SizedBox(
+          SizedBox(
             height: 80,
             child: Align(
               alignment: Alignment.center,
@@ -32,16 +33,33 @@ class MovementCard extends StatelessWidget {
           Expanded(
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(movement.description),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(movement.description),
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Text(
+                        "${movement.date.day}/${movement.date.month}/${movement.date.year}",
+                        style: const TextStyle(color: kPrimaryColor)),
+                  ),
+                ],
+              ),
             ),
           ),
-          Text(
-              (movement.type == 'income' ? '+ ' : '- ')  + movement.amount.toString(),
-            style: const TextStyle(color: kPrimaryColor),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              (movement.type == 'income' ? '+\$' : '-\$') +
+                  movement.amount.toString(),
+              style: const TextStyle(color: kPrimaryColor),
+            ),
           ),
         ],
       ),
-
     );
   }
 }
