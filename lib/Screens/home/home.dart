@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maneja_tus_cuentas/Screens/Components/Cards/HomeActionCard.dart';
 import 'package:maneja_tus_cuentas/Screens/achievements/achievements.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
@@ -16,117 +16,129 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final DatabaseService _databaseService = DatabaseService(uid: AuthService().currentUser!.uid);
+  final DatabaseService _databaseService =
+      DatabaseService(uid: AuthService().currentUser!.uid);
 
   String? _userName;
+  int? _balance;
 
   final users = FirebaseFirestore.instance.collection('users');
 
-  void _getUserName() async {
-    users.doc(AuthService().currentUser!.uid).get().then((DocumentSnapshot doc) => {
-      setState(() {
-        _userName = doc.get('name');
-      })
-    });
+  void _getUserData() async {
+    users
+        .doc(AuthService().currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot doc) => {
+              setState(() {
+                _userName = doc.get('name');
+                _balance = doc.get('balance') ?? 0;
+              })
+            });
   }
 
   @override
   void initState() {
     super.initState();
-    _getUserName();
+    _getUserData();
   }
 
-  Widget _createAchievementsSection(){
-    return Achievements(title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
+  Widget _createAchievementsSection() {
+    return const Achievements(
+        title: "Tus metas", screenTitle1: "En progreso", screenTitle2: "Listo");
   }
 
   @override
   Widget build(BuildContext context) {
-    return
-      Padding(
-        padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget> [
-            const Text(
-              'Bienvenido',
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text('Bienvenido',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 14.0,
-              )
-            ),
-            const SizedBox(height: 10),
-            Text(
-              _userName == null ? 'Loading' : '$_userName',
+              )),
+          const SizedBox(height: 10),
+
+          // User name
+          Text(_userName ?? 'Usuario',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w600,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget> [
-                const Text(
-                  'Tus ahorros',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Ver Todo',
-                      style: TextStyle(
-                        color: Colors.green
-                      )
-                    )
-                ),
-              ],
-            ),
+              )),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget> [
-                const Text(
-                  'Tus Metas',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+            child: HomeActionCard(),
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const Text(
+                'Tus ahorros',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
                 ),
-                TextButton(
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => _createAchievementsSection())),
-                    child: const Text(
-                        'Ver Más +',
-                        style: TextStyle(
-                            color: Colors.green
-                        )
-                    )
+              ),
+              TextButton(
+                  onPressed: () {},
+                  child: const Text('Ver Todo',
+                      style: TextStyle(color: Colors.green))),
+            ],
+          ),
+
+          // User balance
+          Text('\$${_balance ?? 0}',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold,
+              )),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const Text(
+                'Tus Metas',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
                 ),
-              ],
-            ),
-            StreamBuilder(
-                stream: _databaseService.budgets,
-                builder: (context, AsyncSnapshot<List<Budget>> snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: snapshot.data!.isNotEmpty ?
-                      BudgetCard(budget: snapshot.data![0]) :
-                          Container(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text("$snapshot.error");
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                }),
-          ],
-        ),
-      );
+              ),
+              TextButton(
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => _createAchievementsSection())),
+                  child: const Text('Ver Más +',
+                      style: TextStyle(color: Colors.green))),
+            ],
+          ),
+          StreamBuilder(
+              stream: _databaseService.budgets,
+              builder: (context, AsyncSnapshot<List<Budget>> snapshot) {
+                if (snapshot.hasData) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: snapshot.data!.isNotEmpty
+                        ? BudgetCard(budget: snapshot.data![0])
+                        : Container(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("$snapshot.error");
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+        ],
+      ),
+    );
   }
 }
+
