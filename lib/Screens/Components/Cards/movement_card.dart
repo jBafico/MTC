@@ -36,7 +36,7 @@ class MovementCard extends StatelessWidget {
             ),
           ),
           Text(
-              (movement.type == 'ingreso' ? '+ ' : '- ')  + movement.amount.toString(),
+              (movement.type == 'income' ? '+ ' : '- ')  + movement.amount.toString(),
             style: const TextStyle(color: kPrimaryColor),
           ),
         ],
