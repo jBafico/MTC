@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
     return  Scaffold(
         key: const Key("HomePageScaffold"),
         appBar: AppBar(
+          elevation: 0,
           title: const Text('MTC home'),
           actions: [
             _notificationsButton(),

@@ -123,15 +123,18 @@ class DatabaseService {
   // ---------- MOVEMENTS ---------- //
   // Get movements from Collection
   List<Movement> _movementsFromCollection(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
+    var resp = snapshot.docs.map((doc) {
       return Movement(
         description: doc.get('description') ?? '',
         amount: doc.get('amount') ?? 0.0,
-        date: doc.get('date') ?? DateTime.now(),
+        date: doc.get('date').toDate() ?? DateTime.now(),
         category: Category(name: doc.get('category')),
         type: doc.get('type') ?? '',
       );
     }).toList();
+
+    resp.sort((a, b) => b.date.compareTo(a.date));
+    return resp;
   }
 
   // get movements stream
