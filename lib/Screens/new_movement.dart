@@ -1,7 +1,7 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Movement.dart';
+import 'package:maneja_tus_cuentas/Model/UserData.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
 import '../Model/Category.dart';
@@ -181,25 +181,37 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                     return;
                   }
 
-                  // If everything is ok, add the movement to the database
-                  _databaseService
-                      .updateMovement(
-                        Movement(
-                          amount: double.parse(_controllerAmount.text),
-                          category:
-                              _currentCategory ?? Category.defaultCategory,
-                          description: _controllerDescription.text,
-                          type: _currentType == 1 ? 'spending' : 'income',
-                          date: DateTime.now(),
-                        ),
-                      )
-                      .then((value) => Navigator.pop(context))
-                      .onError((error, stackTrace) =>
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Error al ingresar el movimiento'),
-                            ),
-                          ));
+                  try {
+                    // If everything is ok, add the movement to the database
+                    await _databaseService.updateMovement(
+                      Movement(
+                        amount: double.parse(_controllerAmount.text),
+                        category: _currentCategory ?? Category.defaultCategory,
+                        description: _controllerDescription.text,
+                        type: _currentType == 1 ? 'spending' : 'income',
+                        date: DateTime.now(),
+                      ),
+                    );
+
+
+                    // Get user data
+                    UserData userData = await _databaseService.getUserData();
+
+                    // Update user data
+                    userData
+                        .updateBalance(double.parse(_controllerAmount.text));
+
+                    _databaseService
+                        .updateUserBalance(userData.balance)
+                        .then((value) => Navigator.pop(context));
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Error al ingresar el movimiento'),
+                      ),
+                    );
+                    return;
+                  }
                 },
                 child: const Text('Ingresar'),
               ),
