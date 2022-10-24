@@ -23,7 +23,7 @@ class DatabaseService {
     });
   }
 
-  Future updateUserBalance(int balance) async {
+  Future updateUserBalance(double balance) async {
     return await userCollection.doc(uid).update({
       'balance': balance,
     });
@@ -87,13 +87,19 @@ class DatabaseService {
     return UserData(
       uid: uid,
       name: snapshot.get('name'),
-      balance: snapshot.get('balance') ?? 0,
+      balance: snapshot.get('balance') + 0.0 /* casteo falopa porque devuelve int y no me deja castear directamente */ ?? 0.0,
     );
   }
 
   // get user doc stream
   Stream<UserData> get userData {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
+  }
+
+  // Get single user data
+  Future<UserData> getUserData() async {
+    DocumentSnapshot snapshot = await userCollection.doc(uid).get();
+    return _userDataFromSnapshot(snapshot);
   }
 
   // ---------- BUDGETS ---------- //

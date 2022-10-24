@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/Components/Cards/HomeActionCard.dart';
 import 'package:maneja_tus_cuentas/Screens/achievements/achievements.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
 import '../../Model/Budget.dart';
+import '../../Model/UserData.dart';
 import '../../Services/auth.dart';
 import '../Components/Cards/budget_card.dart';
 
@@ -18,29 +18,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final DatabaseService _databaseService =
       DatabaseService(uid: AuthService().currentUser!.uid);
-
-  String? _userName;
-  int? _balance;
-
-  final users = FirebaseFirestore.instance.collection('users');
-
-  void _getUserData() async {
-    users
-        .doc(AuthService().currentUser!.uid)
-        .get()
-        .then((DocumentSnapshot doc) => {
-              setState(() {
-                _userName = doc.get('name');
-                _balance = doc.get('balance') ?? 0;
-              })
-            });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserData();
-  }
 
   Widget _createAchievementsSection() {
     return const Achievements(
@@ -62,12 +39,25 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10),
 
           // User name
-          Text(_userName ?? 'Usuario',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w600,
-              )),
+          StreamBuilder(
+              stream: _databaseService.userData,
+              builder: (context, AsyncSnapshot<UserData> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    snapshot.data!.name,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("$snapshot.error");
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+
 
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -93,12 +83,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           // User balance
-          Text('\$${_balance ?? 0}',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold,
-              )),
+          StreamBuilder(
+              stream: _databaseService.userData,
+              builder: (context, AsyncSnapshot<UserData> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    '\$${snapshot.data!.balance}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("$snapshot.error");
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

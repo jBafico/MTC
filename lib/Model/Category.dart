@@ -10,7 +10,7 @@ class Category {
     'Health': Icons.local_hospital,
     'Travel': Icons.flight,
     'Education': Icons.school,
-    'Tax': Icons.attach_money,
+    'Payments': Icons.attach_money,
     'Other': Icons.more_horiz,
   };
 
@@ -24,7 +24,7 @@ class Category {
     Category(name: 'Health'),
     Category(name: 'Travel'),
     Category(name: 'Education'),
-    Category(name: 'Tax'),
+    Category(name: 'Payments'),
     //Category(name: 'Other', icon: Icons.more_horiz),
   ];
 
