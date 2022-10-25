@@ -84,10 +84,11 @@ class _BudgetFormState extends State<BudgetForm> {
       DatabaseService(uid: AuthService().currentUser!.uid);
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
     _controllerName = TextEditingController(
         text:
-            widget.budget == null ? _controllerName.text : widget.budget!.name);
+        widget.budget == null ? _controllerName.text : widget.budget!.name);
     _controllerDescription = TextEditingController(
         text: widget.budget == null
             ? _controllerDescription.text
@@ -101,6 +102,11 @@ class _BudgetFormState extends State<BudgetForm> {
     _currentCategory = widget.budget == null
         ? _currentCategory
         : widget.budget!.category;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Form(
       child: Column(
@@ -239,7 +245,7 @@ class _BudgetFormState extends State<BudgetForm> {
 
                 if (_controllerName.text.isEmpty ||
                     _controllerDescription.text.isEmpty ||
-                    _controllerAmount.text.isEmpty) {
+                    (_controllerAmount.text.isEmpty && widget.budget == null)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Por favor, rellena todos los campos'),
@@ -296,6 +302,7 @@ class _BudgetFormState extends State<BudgetForm> {
 
                   widget.budget!.name = _controllerName.text;
                   widget.budget!.description = _controllerDescription.text;
+                  widget.budget!.category = _currentCategory?? Category.defaultCategory;
 
                   await _databaseService
                       .updateBudget(widget.budget!)
