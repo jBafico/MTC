@@ -42,7 +42,7 @@ class DatabaseService {
       'amount': budget.amount,
       'spent': budget.spent,
       'completed': budget.completed,
-      'category': budget.category,
+      'category': budget.category.name,
     });
   }
 

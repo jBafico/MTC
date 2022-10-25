@@ -99,7 +99,7 @@ class _BudgetFormState extends State<BudgetForm> {
             : "${widget.budget!.amount}");
 
     _currentCategory = widget.budget == null
-        ? null
+        ? _currentCategory
         : widget.budget!.category;
 
     return Form(
@@ -234,6 +234,30 @@ class _BudgetFormState extends State<BudgetForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
+
+                // Validate form
+
+                if (_controllerName.text.isEmpty ||
+                    _controllerDescription.text.isEmpty ||
+                    _controllerAmount.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Por favor, rellena todos los campos'),
+                    ),
+                  );
+                  return;
+                }
+
+                // Validate category
+                if (_currentCategory == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Por favor, selecciona una categoria'),
+                    ),
+                  );
+                  return;
+                }
+
                 if (widget.budget == null) {
                   await _databaseService
                       .updateBudget(
