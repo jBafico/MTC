@@ -199,7 +199,7 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
 
                     // Update user data
                     userData
-                        .updateBalance(double.parse(_controllerAmount.text));
+                        .updateBalance(double.parse(_controllerAmount.text) * (_currentType == 1 ? -1 : 1));
 
                     _databaseService
                         .updateUserBalance(userData.balance)

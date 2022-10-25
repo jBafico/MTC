@@ -84,11 +84,19 @@ class DatabaseService {
   // ---------- USER DATA ---------- //
   // user data from snapshots
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
-    return UserData(
-      uid: uid,
-      name: snapshot.get('name'),
-      balance: snapshot.get('balance') + 0.0 /* casteo falopa porque devuelve int y no me deja castear directamente */ ?? 0.0,
-    );
+    //TODO: mejorar esto
+    try {
+      return UserData(
+        uid: uid,
+        name: snapshot.get('name'),
+        balance: (snapshot.get('balance') ?? 0) +
+                0.0 /* casteo falopa porque devuelve int y no me deja castear directamente */ ??
+            0.0,
+      );
+    } catch (e) {
+      print(e.toString());
+      return UserData(uid: uid, name: snapshot.get('name'), balance: 0.0);
+    }
   }
 
   // get user doc stream
