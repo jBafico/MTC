@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/new_movement.dart';
+import 'package:maneja_tus_cuentas/Screens/scanner/scanner.dart';
+import 'package:maneja_tus_cuentas/main.dart';
 
 class HomeActionCard extends StatelessWidget {
   const HomeActionCard({Key? key}) : super(key: key);
@@ -63,7 +65,9 @@ class HomeActionCard extends StatelessWidget {
                 Column(
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ScannerScreen()));
+                      },
                       child: const CircleAvatar(
                         backgroundColor: Color(0xFFBCC3FF),
                         child: Image(
