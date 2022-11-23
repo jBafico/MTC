@@ -35,6 +35,10 @@ Widget build(BuildContext context) {
           //preguntamos por el indice actual en el que estamos con context y defaultControler
           body:Column( mainAxisAlignment: MainAxisAlignment.center,
               children:<Widget>[
+                const Image(
+                  image: AssetImage('assets/images/ScannerIcon.jpg'),
+                ),
+
             const Text(
             'Ingrese un movimiento escaneando el ticket con tu cámara',
             style: TextStyle(
@@ -54,11 +58,11 @@ Widget build(BuildContext context) {
                       MaterialPageRoute(
                         builder: (context) => const  ScannerScreen()));},
                 child: const Text('Abrir Scanner',
-                    style: TextStyle(color: Colors.green))),]));
+                    style: TextStyle(color: Colors.green,
+                                      fontSize: 24.0 ))),]));
 }
 }
 
-//Navigator.push(context, MaterialPageRoute(builder: (context) => const ScannerScreen()));
 
 AppBar buildBar(BuildContext context, String tabTitle) {
   return AppBar(
