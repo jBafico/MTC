@@ -7,6 +7,7 @@ import '../../Model/Budget.dart';
 import '../../Model/UserData.dart';
 import '../../Services/auth.dart';
 import '../Components/Cards/budget_card.dart';
+import '../scanner/scannerView.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

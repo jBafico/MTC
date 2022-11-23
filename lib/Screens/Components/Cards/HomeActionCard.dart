@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Screens/new_movement.dart';
 import 'package:maneja_tus_cuentas/Screens/scanner/scanner.dart';
+import 'package:maneja_tus_cuentas/Screens/scanner/scannerView.dart';
 import 'package:maneja_tus_cuentas/main.dart';
 
 class HomeActionCard extends StatelessWidget {
@@ -66,7 +67,7 @@ class HomeActionCard extends StatelessWidget {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ScannerScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const ScannerView(title: "Scanner")));
                       },
                       child: const CircleAvatar(
                         backgroundColor: Color(0xFFBCC3FF),
