@@ -7,6 +7,7 @@ import '../../Model/Budget.dart';
 import '../../Model/UserData.dart';
 import '../../Services/auth.dart';
 import '../Components/Cards/budget_card.dart';
+import '../notifications/notifications.dart';
 import '../scanner/scannerView.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Notifications())),
                   child: const Text('Ver Todo',
                       style: TextStyle(color: Colors.green))),
             ],
