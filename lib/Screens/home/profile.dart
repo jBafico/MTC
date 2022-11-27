@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
+import '../../Model/UserData.dart';
+import '../../Services/database.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -12,27 +15,15 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _nameController = TextEditingController();
 
-  final User? _user = AuthService().currentUser;
-
-  String? _userName;
-
-  final users = FirebaseFirestore.instance.collection('users');
-
-  void _getUserName() async {
-    users.doc(_user!.uid).get().then((DocumentSnapshot doc) => {
-      setState(() {
-        _userName = doc.get('name');
-      })
-    });
-  }
+  final DatabaseService _databaseService =
+      DatabaseService(uid: AuthService().currentUser!.uid);
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    _getUserName();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Your Profile',
+          child: Text(
+            'Your Profile',
             style: TextStyle(
               fontSize: 30,
             ),
@@ -51,56 +43,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Card(
             child: Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: ProfileIcon(),
-                ),
-                Center(child: Padding(
+                Center(
+                    child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                      _userName == null ? 'Loading' : '$_userName',
-                      style: const TextStyle(
-                          fontSize: 24
-                      )
-                  ),
+                  child: // User name
+                      StreamBuilder(
+                          stream: _databaseService.userData,
+                          builder: (context, AsyncSnapshot<UserData> snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data!.name,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("$snapshot.error");
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                          }),
                 )),
               ],
             ),
           ),
         ),
-      ],
-    );
-  }
-}
 
-
-class ProfileIcon extends StatelessWidget {
-  const ProfileIcon({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            radius: 30,
-            backgroundColor: Color(0xFFBCC3FF),
-            child: Icon(Icons.person, size: 40, color: kPrimaryColor),
+        // Field to change name
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Name',
+              ),
+              controller: _nameController,
+            ),
           ),
         ),
-        Positioned(
-          bottom: 5,
-          right: 5,
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: kPrimaryColor,
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(Icons.edit_outlined, color: Colors.white, size: 13),
-            ),
+
+        // Button to change name
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () async {
+              await _databaseService
+                  .updateUserName(_nameController.text)
+                  .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Name updated'))))
+                  .onError((error, stackTrace) => ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(
+                          content: Text('Error updating name'))));
+            },
+            child: const Text('Edit Profile'),
           ),
         ),
       ],

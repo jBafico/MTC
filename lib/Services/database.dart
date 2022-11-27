@@ -85,18 +85,19 @@ class DatabaseService {
   // user data from snapshots
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
     //TODO: mejorar esto
+
+    String name = '';
+    double balance = 0;
+
     try {
-      return UserData(
-        uid: uid,
-        name: snapshot.get('name'),
-        balance: (snapshot.get('balance') ?? 0) +
-                0.0 /* casteo falopa porque devuelve int y no me deja castear directamente */ ??
-            0.0,
-      );
+      name = snapshot.get('name');
+      balance = snapshot.get('balance').toDouble();
+
     } catch (e) {
       print(e.toString());
-      return UserData(uid: uid, name: snapshot.get('name'), balance: 0.0);
     }
+
+    return UserData(uid: uid, name: name, balance: balance);
   }
 
   // get user doc stream
@@ -113,16 +114,39 @@ class DatabaseService {
   // ---------- BUDGETS ---------- //
   // Get budgets from Collection
   List<Budget> _budgetsFromCollection(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
+
+    var budgets = snapshot.docs.map((doc) {
+
+      String name = '';
+      String description = '';
+      double amount = 0;
+      double spent = 0;
+      bool completed = false;
+      String category = Category.defaultCategory.name;
+
+      try {
+        name = doc.get('name');
+        description = doc.get('description');
+        amount = doc.get('amount');
+        spent = doc.get('spent');
+        completed = doc.get('completed');
+        category = doc.get('category');
+      } catch (e) {
+        print(e.toString());
+      }
+
       return Budget(
-        name: doc.get('name') ?? '',
-        description: doc.get('description') ?? '',
-        amount: doc.get('amount') ?? 0.0,
-        spent: doc.get('spent') ?? 0.0,
-        completed: doc.get('completed') ?? false,
-        category: Category(name: doc.get('category')),
+        name: name,
+        description: description,
+        amount: amount,
+        spent: spent,
+        completed: completed,
+        category: Category(name: category),
       );
     }).toList();
+
+
+    return budgets;
   }
 
   // get budgets stream
@@ -137,13 +161,31 @@ class DatabaseService {
   // ---------- MOVEMENTS ---------- //
   // Get movements from Collection
   List<Movement> _movementsFromCollection(QuerySnapshot snapshot) {
+
     var resp = snapshot.docs.map((doc) {
+
+      String description = '';
+      double amount = 0;
+      Timestamp date = Timestamp.now();
+      String category = Category.defaultCategory.name;
+      String type = '';
+
+      try {
+        description = doc.get('description');
+        amount = doc.get('amount');
+        date = doc.get('date');
+        category = doc.get('category');
+        type = doc.get('type');
+      } catch (e) {
+        print(e.toString());
+      }
+
       return Movement(
-        description: doc.get('description') ?? '',
-        amount: doc.get('amount') ?? 0.0,
-        date: doc.get('date').toDate() ?? DateTime.now(),
-        category: Category(name: doc.get('category')),
-        type: doc.get('type') ?? '',
+        description: description,
+        amount: amount.toDouble(),
+        date: date.toDate(),
+        category: Category(name: category),
+        type: type,
       );
     }).toList();
 
