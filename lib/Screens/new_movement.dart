@@ -9,7 +9,9 @@ import '../Services/auth.dart';
 import '../constants.dart';
 
 class NewMovementScreen extends StatefulWidget {
-  const NewMovementScreen({Key? key}) : super(key: key);
+  const NewMovementScreen({Key? key, this.initialValue}) : super(key: key);
+
+  final double? initialValue;
 
   @override
   State<NewMovementScreen> createState() => _NewMovementScreenState();
@@ -27,6 +29,14 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
   Category? _currentCategory;
 
   int _currentType = 1;
+
+  @override
+  void initState() {
+
+    _controllerAmount.text = widget.initialValue?.toString() ?? "";
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
