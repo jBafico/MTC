@@ -60,6 +60,15 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
+  flutter_launcher_icons: "^0.11.0"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/mtc_icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+
 
 
 # For information on the generic Dart part of this file, see the
