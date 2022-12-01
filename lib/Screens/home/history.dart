@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Movement.dart';
 import 'package:maneja_tus_cuentas/Screens/Components/Cards/movement_card.dart';
+import 'package:maneja_tus_cuentas/Screens/new_movement.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
 import '../../Services/auth.dart';
@@ -41,10 +42,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  MovementCard(movement: snapshot.data![index]),
+                            return GestureDetector(
+                              onLongPress: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => NewMovementScreen(movement: snapshot.data![index])));
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                MovementCard(movement: snapshot.data![index]),
+                              ),
                             );
                           });
                     } else if (snapshot.hasError) {

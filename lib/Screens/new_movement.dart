@@ -9,9 +9,10 @@ import '../Services/auth.dart';
 import '../constants.dart';
 
 class NewMovementScreen extends StatefulWidget {
-  const NewMovementScreen({Key? key, this.initialValue}) : super(key: key);
+  const NewMovementScreen({Key? key, this.initialValue, this.movement}) : super(key: key);
 
   final double? initialValue;
+  final Movement? movement;
 
   @override
   State<NewMovementScreen> createState() => _NewMovementScreenState();
@@ -33,7 +34,15 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
   @override
   void initState() {
 
-    _controllerAmount.text = widget.initialValue?.toString() ?? "";
+    if(widget.initialValue != null) {
+      _controllerAmount.text = widget.initialValue.toString();
+    }
+    else if(widget.movement != null){
+      _controllerAmount.text = (widget.movement?.amount.toString())!;
+      _controllerDescription.text = (widget.movement?.description)!;
+      _currentCategory = (widget.movement?.category);
+      _currentType = widget.movement?.type == "spending" ? 1  : 2;
+    }
 
     super.initState();
   }
@@ -42,7 +51,9 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ingresar movimiento'),
+        title: Text(widget.movement == null
+            ? "Ingresar Movimiento"
+            : "Editar Movimiento"),
         backgroundColor: Colors.grey.shade50,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -190,8 +201,11 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                     );
                     return;
                   }
-
+                  
                   try {
+                    if(widget.movement != null){
+                      deleteMovement();
+                    }
                     // If everything is ok, add the movement to the database
                     await _databaseService.updateMovement(
                       Movement(
@@ -217,18 +231,32 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Error al ingresar el movimiento'),
+                        content: Text('Error al guardar el movimiento'),
                       ),
                     );
                     return;
                   }
                 },
-                child: const Text('Ingresar'),
+                child: Text(widget.movement == null
+                    ? "Ingresar"
+                    : "Guardar cambios"),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> deleteMovement() async {
+    _databaseService.removeMovement(widget.movement!);
+    // Get user data
+    UserData userData = await _databaseService.getUserData();
+
+    userData
+        .updateBalance((widget.movement?.amount)! * (widget.movement?.type == 'income' ? -1 : 1));
+
+    _databaseService
+        .updateUserBalance(userData.balance);
   }
 }
