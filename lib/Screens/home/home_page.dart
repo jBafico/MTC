@@ -42,32 +42,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-// AppBar _appBarHandler(){
-//     AppBar appBar = AppBar();
-//
-//     if(_currentScreen == 1){
-//       //
-//     }
-//     else {
-//
-//     }
-//
-//     return appBar;
-// }
+AppBar _appBarHandler(){
+    String title = "";
+
+    switch(_currentScreen){
+      case 0: title = "Home";
+              break;
+
+      case 1: title = "History";
+              break;
+      case 2: title = "Statistics";
+              break;
+      case 3: title = "Profile";
+    }
+
+    return AppBar(
+      elevation: 0,
+      title: Text(title),
+      actions: [
+        _notificationsButton(),
+        _signOutButton(),
+      ],
+    );
+}
 
   @override
   Widget build(BuildContext context) {
 
     return  Scaffold(
         key: const Key("HomePageScaffold"),
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('MTC home'),
-          actions: [
-            _notificationsButton(),
-            _signOutButton(),
-          ],
-        ),
+        appBar: _appBarHandler(),
         //appBar: _appBarHandler(),
         body: _screens[_currentScreen],
         bottomNavigationBar: BottomNavigationBar(
