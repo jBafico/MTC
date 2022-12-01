@@ -3,29 +3,29 @@ import 'package:flutter/material.dart';
 class Category {
 
   static final Map<String, IconData> _icons = {
-    'Food': Icons.fastfood,
-    'Transport': Icons.directions_car,
-    'Shopping': Icons.shopping_cart,
-    'Entertainment': Icons.movie,
-    'Health': Icons.local_hospital,
-    'Travel': Icons.flight,
-    'Education': Icons.school,
-    'Payments': Icons.attach_money,
-    'Other': Icons.more_horiz,
+    'Comida': Icons.fastfood,
+    'Transporte': Icons.directions_car,
+    'Compras': Icons.shopping_cart,
+    'Entretenimiento': Icons.movie,
+    'Salud': Icons.local_hospital,
+    'Viajes': Icons.flight,
+    'Educación': Icons.school,
+    'Pagos': Icons.attach_money,
+    'Nueva Categoría': Icons.add,
   };
 
   static final defaultCategory = Category(name: 'Other');
 
-  static final categories = [
-    Category(name: 'Food'),
-    Category(name: 'Transport'),
-    Category(name: 'Shopping'),
-    Category(name: 'Entertainment'),
-    Category(name: 'Health'),
-    Category(name: 'Travel'),
-    Category(name: 'Education'),
-    Category(name: 'Payments'),
-    //Category(name: 'Other', icon: Icons.more_horiz),
+  static List<Category> categories = [
+    Category(name: 'Comida'),
+    Category(name: 'Transporte'),
+    Category(name: 'Compras'),
+    Category(name: 'Entretenimiento'),
+    Category(name: 'Salud'),
+    Category(name: 'Viajes'),
+    Category(name: 'Educación'),
+    Category(name: 'Pagos'),
+    // Category(name: 'Nueva Categoría'),
   ];
 
   final String name;
@@ -45,6 +45,4 @@ class Category {
 
   @override
   bool operator ==(Object other) => other is Category && other.name == name;
-
-
 }

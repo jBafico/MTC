@@ -88,7 +88,6 @@ class HomeActionCard extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }
