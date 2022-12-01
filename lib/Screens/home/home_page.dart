@@ -3,7 +3,6 @@ import 'package:maneja_tus_cuentas/Screens/home/history.dart';
 import 'package:maneja_tus_cuentas/Screens/home/home.dart';
 import 'package:maneja_tus_cuentas/Screens/home/profile.dart';
 import 'package:maneja_tus_cuentas/Screens/home/statistics.dart';
-import 'package:maneja_tus_cuentas/Screens/notifications/notifications.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
@@ -37,10 +36,6 @@ class _HomePageState extends State<HomePage> {
     return IconButton(onPressed: signOut, icon: const Icon(Icons.logout),);
   }
 
-  Widget _notificationsButton() {
-    return IconButton(icon: const Icon(Icons.notifications), padding: const EdgeInsets.symmetric(horizontal: 20), onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Notifications())),
-    );
-  }
 
 AppBar _appBarHandler(){
     String title = "";
@@ -59,7 +54,6 @@ AppBar _appBarHandler(){
       elevation: 0,
       title: Text(title),
       actions: [
-        _notificationsButton(),
         _signOutButton(),
       ],
     );

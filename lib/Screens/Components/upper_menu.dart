@@ -14,7 +14,7 @@ class UpperMenu {
   }
 
   UpperMenu.notifications(){
-    _title = "Notificaciones";
+    _title = "Ahorros";
     _screenTitleList = ["Todas", "Sin leer"];
   }
 
