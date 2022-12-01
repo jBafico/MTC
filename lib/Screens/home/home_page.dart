@@ -46,14 +46,13 @@ AppBar _appBarHandler(){
     String title = "";
 
     switch(_currentScreen){
-      case 0: title = "Home";
+      case 0: title = "Menú Principal";
               break;
-
-      case 1: title = "History";
+      case 1: title = "Historial";
               break;
-      case 2: title = "Statistics";
+      case 2: title = "Estadísticas";
               break;
-      case 3: title = "Profile";
+      case 3: title = "Perfil";
     }
 
     return AppBar(
@@ -87,19 +86,19 @@ AppBar _appBarHandler(){
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Home',
+              label: 'Principal',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),
-              label: 'History',
+              label: 'Historial',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.query_stats),
-              label: 'Statistics',
+              label: 'Estadísticas',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
-              label: 'Profile',
+              label: 'Perfil',
             ),
           ],
         ));
