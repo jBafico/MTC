@@ -18,51 +18,69 @@ class StatisticsScreen extends StatefulWidget {
 class _StatisticsScreenState extends State<StatisticsScreen> {
 
   late List<BarChartData> barChartDataList;
-  late Map<String,double> pieChartData;
+  late Map<String, double> pieChartDataSpending;
+  late Map<String, double> pieChartDataIncome;
   bool isLoading = true;
 
-  final DatabaseService _databaseService = DatabaseService(uid: AuthService().currentUser!.uid);
+  final DatabaseService _databaseService = DatabaseService(
+      uid: AuthService().currentUser!.uid);
 
-  void addElements(List<Movement> l){
+  void addElements(List<Movement> l) {
     var income = 0.0;
     var spend = 0.0;
-    var pieChartDataMap = <String,double>{};
-    for ( var mov in l){
-      if ( mov.type == "spending"){
-        pieChartDataMap.update(mov.category.name, (value) => value + mov.amount,ifAbsent:  () => mov.amount);
+    var pieChartDataMapSpending = <String, double>{};
+    var pieChartDataMapIncome = <String, double>{};
+
+    for (var mov in l) {
+      if (mov.type == "spending") {
+        pieChartDataMapSpending.update(
+            mov.category.name, (value) => value + mov.amount,
+            ifAbsent: () => mov.amount);
         spend += mov.amount;
       } else {
+        pieChartDataMapIncome.update(
+            mov.category.name, (value) => value + mov.amount,
+            ifAbsent: () => mov.amount);
         income += mov.amount;
       }
     }
     var incomeData = BarChartData(category: "Ingresos", total: income);
     var spendData = BarChartData(category: "Gastos", total: spend);
     setState(() {
-      pieChartData = pieChartDataMap;
-      barChartDataList = [spendData,incomeData];
+      pieChartDataSpending = pieChartDataMapSpending;
+      pieChartDataIncome = pieChartDataMapIncome;
+      barChartDataList = [spendData, incomeData];
       isLoading = false;
     });
   }
 
-  void setInitialData(){
-    _databaseService.movements.forEach((element) => addElements(element) );
+  void setInitialData() {
+    _databaseService.movements.forEach((element) => addElements(element));
   }
 
   @override
   Widget build(BuildContext context) {
     setInitialData();
 
-    if ( isLoading ){
+    if (isLoading) {
       return const Text("Loading statistics Data");
     }
 
-    var childrenArray =  <Widget>[NetworthBarChart(chartDataList: barChartDataList)];
-    if (pieChartData.isNotEmpty ) {
-      childrenArray.add(StatisticsPieChart(dataMap: pieChartData, chartTitle: "Gastos"));
+    var childrenArray = <Widget>[
+      NetworthBarChart(chartDataList: barChartDataList)
+    ];
+    if (pieChartDataSpending.isNotEmpty) {
+      childrenArray.add(StatisticsPieChart(
+          dataMap: pieChartDataSpending, chartTitle: "Gastos"));
     }
-    return Column(
-      children: childrenArray,
-    );
+
+    if (pieChartDataIncome.isNotEmpty) {
+      childrenArray.add(StatisticsPieChart(
+          dataMap: pieChartDataIncome, chartTitle: "Ingresos"));
+    }
+    return ListView(
+        children: childrenArray,
+      );
   }
 }
 
