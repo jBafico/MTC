@@ -36,7 +36,7 @@ Widget build(BuildContext context) {
           body:Column( mainAxisAlignment: MainAxisAlignment.center,
               children:<Widget>[
                 const Image(
-                  image: AssetImage('assets/images/ScannerIcon.jpg'),
+                  image: AssetImage('assets/images/ScannerIcon.png'),
                 ),
 
             const Text(
