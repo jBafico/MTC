@@ -1,10 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:maneja_tus_cuentas/Model/Budget.dart';
 import 'package:maneja_tus_cuentas/Model/Movement.dart';
-import 'package:maneja_tus_cuentas/Screens/Components/BarChart/achievments_bar_chart.dart';
-import 'package:maneja_tus_cuentas/Screens/Components/BarChart/achievments_worth_bar_chart.dart';
 import 'package:maneja_tus_cuentas/Screens/Components/BarChart/bar_chart_data.dart';
 import 'package:maneja_tus_cuentas/Screens/Components/BarChart/net_worth_bar_chart.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
@@ -21,24 +16,16 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+
   late List<BarChartData> barChartDataList;
   late Map<String, double> pieChartDataSpending;
   late Map<String, double> pieChartDataIncome;
-
-  late Map<String, double> pieChartAchievmentsDone;
-  late Map<String, double> pieChartAchievmentsInProgress;
-  late List<BarChartData> amountAndSpendingList;
-  late List<BarChartData> achievmentsList;
-
   bool isLoading = true;
-  late List<Widget> widgetArray;
-  var currentScreenIndex = 0;
-  List<String> titles = ["Historial", "Metas"];
 
-  final DatabaseService _databaseService =
-      DatabaseService(uid: AuthService().currentUser!.uid);
+  final DatabaseService _databaseService = DatabaseService(
+      uid: AuthService().currentUser!.uid);
 
-  void addHistoryElements(List<Movement> l) {
+  void addElements(List<Movement> l) {
     var income = 0.0;
     var spend = 0.0;
     var pieChartDataMapSpending = <String, double>{};
@@ -59,72 +46,29 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     }
     var incomeData = BarChartData(category: "Ingresos", total: income);
     var spendData = BarChartData(category: "Gastos", total: spend);
-
     setState(() {
       pieChartDataSpending = pieChartDataMapSpending;
       pieChartDataIncome = pieChartDataMapIncome;
       barChartDataList = [spendData, incomeData];
-    });
-  }
-
-  void addAchievmentsElements(List<Budget> budgets) {
-    var completed = 0;
-    var uncompleted = 0;
-    var totalAmount = 0.0;
-    var totalSpent = 0.0;
-    var mapDone = <String, double>{};
-    var mapInProgress = <String, double>{};
-    for (var b in budgets) {
-      if (b.completed == true) {
-        completed++;
-        mapDone.update(b.category.name, (value) => 1 + value,
-            ifAbsent: () => 1);
-      } else {
-        uncompleted++;
-        mapInProgress.update(b.category.name, (value) => 1 + value,
-            ifAbsent: () => 1);
-      }
-      totalAmount += b.amount;
-      totalSpent += b.spent;
-    }
-
-    var totalGoals = BarChartData(
-        category: "Metas totales", total: (completed + uncompleted).toDouble());
-    var unAchievedGoals = BarChartData(
-        category: "Metas en progreso", total: uncompleted.toDouble());
-    var achievedGoals =
-        BarChartData(category: "Metas logradas", total: completed.toDouble());
-
-    var totalSpentData =
-        BarChartData(category: "Monto invertido", total: totalSpent);
-    var totalAmountData =
-        BarChartData(category: "Monto total", total: totalAmount);
-
-    setState(() {
-      pieChartAchievmentsDone = mapDone;
-      pieChartAchievmentsInProgress = mapInProgress;
-      achievmentsList = [totalGoals, unAchievedGoals, achievedGoals];
-      amountAndSpendingList = [totalAmountData, totalSpentData];
-      widgetArray = [renderHistoryScreen(), renderAchievmentsScreen()];
       isLoading = false;
     });
   }
 
   void setInitialData() {
-    _databaseService.movements
-        .forEach((element) => addHistoryElements(element));
-    _databaseService.budgets
-        .forEach((element) => addAchievmentsElements(element));
+    _databaseService.movements.forEach((element) => addElements(element));
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     setInitialData();
-  }
 
-  Widget renderHistoryScreen() {
-    var childrenArray = <Widget>[];
+    if (isLoading) {
+      return const Text("Loading statistics Data");
+    }
+
+    var childrenArray = <Widget>[
+      NetworthBarChart(chartDataList: barChartDataList)
+    ];
     if (pieChartDataSpending.isNotEmpty) {
       childrenArray.add(StatisticsPieChart(
           dataMap: pieChartDataSpending, chartTitle: "Gastos"));
@@ -134,68 +78,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       childrenArray.add(StatisticsPieChart(
           dataMap: pieChartDataIncome, chartTitle: "Ingresos"));
     }
-
-    childrenArray.addAll([
-      NetworthBarChart(
-          chartDataList: barChartDataList, title: "Patrimonio Neto"),
-      const SizedBox(height: 100)
-    ]);
     return ListView(
-      padding: const EdgeInsets.all(10),
-      children: childrenArray,
-    );
-  }
-
-  Widget renderAchievmentsScreen() {
-    var childrenArray = <Widget>[];
-
-    if (pieChartAchievmentsDone.isNotEmpty) {
-      childrenArray.add(StatisticsPieChart(
-          dataMap: pieChartAchievmentsDone, chartTitle: "Metas\nAlcanzadas"));
-    }
-
-    if (pieChartAchievmentsInProgress.isNotEmpty) {
-      childrenArray.add(StatisticsPieChart(
-          dataMap: pieChartAchievmentsInProgress,
-          chartTitle: "Metas\nEn Progreso"));
-    }
-
-    childrenArray.addAll([
-      AchievmentsBarChart(
-        chartDataList: achievmentsList,
-        title: "Progreso De Metas",
-      ),
-      AchievmentsWorthBarChart(
-        chartDataList: amountAndSpendingList,
-        title: "Dinero Invertido En Metas",
-      ),
-      const SizedBox(height: 100)
-    ]);
-
-    return ListView(
-      padding: const EdgeInsets.all(10),
-      children: childrenArray,
-    );
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Center(child : CircularProgressIndicator());
-    }
-
-    return DefaultTabController(
-        length: titles.length,
-        initialIndex: 0,
-        child: Scaffold(
-            appBar: TabBar(
-              tabs: [Tab(text: titles[0]), Tab(text: titles[1])],
-              indicatorColor: Colors.green,
-              labelColor: Colors.green,
-              unselectedLabelColor: Colors.grey,
-            ),
-            body: TabBarView(
-                children: [renderHistoryScreen(), renderAchievmentsScreen()])));
+        children: childrenArray,
+      );
   }
 }
+
