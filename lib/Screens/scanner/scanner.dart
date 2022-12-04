@@ -105,47 +105,33 @@ class _ScannerScreenState extends State<ScannerScreen> {
                           await textRecognizer.processImage(inputImage);
 
 
-                      bool found = false;
+
+                      double possibleTotal = 0;
                       for (TextBlock block in recognizedText.blocks) {
                         for (TextLine line in block.lines) {
+                          debugPrint("[LINE]: ${line.text}");
                           for (TextElement element in line.elements) {
-
-                            if (element.text.contains("total") ||
-                                element.text.contains("Total")) {
-                              found = true;
-                            }
-
-                            if (found && double.tryParse(element.text.replaceAll(',', '.')) != null) {
-
-                              if (mounted) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NewMovementScreen(
-                                      initialValue: double.parse(element.text),
-                                    ),
-                                  ),
-                                );
+                            debugPrint("[ELEMENT]: ${element.text}");
+                            // find the max double value in the ticket
+                            if(element.text.contains(RegExp("[0-9]+[,\.]{1}[0-9]{2}")) && double.tryParse(element.text.replaceAll(',', '.')) != null)  {
+                              double aux = double.parse(element.text.replaceAll(',', '.'));
+                              if(possibleTotal < aux) {
+                                possibleTotal = aux;
                               }
-
-                              return;
                             }
                           }
                         }
                       }
-
-                      /*TODO QUE HACER CON LA RAW IMAGE
-                    File imageFile = File(rawImage.path);
-
-                    int currentUnix = DateTime.now().millisecondsSinceEpoch;
-                    final directory = await getApplicationDocumentsDirectory();
-                    String fileFormat = imageFile.path.split('.').last;
-
-                    await imageFile.copy(
-                       '${directory.path}/$currentUnix.$fileFormat',
-                    );
-
-                   */
+                      if (mounted && possibleTotal != 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewMovementScreen(
+                              initialValue: possibleTotal,
+                            ),
+                          ),
+                        );
+                      }
                     },
                     child: Stack(
                       alignment: Alignment.center,
