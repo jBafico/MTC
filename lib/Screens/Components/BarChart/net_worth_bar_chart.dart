@@ -10,11 +10,17 @@ import 'bar_chart_data.dart';
 
 class NetworthBarChart extends StatelessWidget{
   final List<BarChartData> chartDataList;
-  const NetworthBarChart({Key? key,required this.chartDataList}) : super(key: key);
+  final String title;
+  const NetworthBarChart({Key? key,required this.chartDataList, required this.title}) : super(key: key);
+
+  MaterialColor getColor(String category){
+    return category == "Ingresos" ? Colors.green:Colors.red;
+  }
 
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
+        title: ChartTitle(text: title,textStyle: const TextStyle(decoration: TextDecoration.underline, fontWeight: FontWeight.bold, decorationColor: Colors.green)),
         primaryXAxis: CategoryAxis(),
         series: <ChartSeries>[
           ColumnSeries<BarChartData, dynamic>(
@@ -23,7 +29,7 @@ class NetworthBarChart extends StatelessWidget{
               dataSource: chartDataList,
               xValueMapper: ( data, _) => data.category,
               yValueMapper: ( data, _) => data.total,
-              pointColorMapper: ( data, _) => data.category == "Ingresos" ? Colors.green:Colors.red,
+              pointColorMapper: ( data, _) => getColor(data.category),
               borderRadius: const BorderRadius.all(Radius.circular(15)
               )
           )
