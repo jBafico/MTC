@@ -8,6 +8,7 @@ import 'package:maneja_tus_cuentas/Model/UserData.dart';
 
 class DatabaseService {
   final String uid;
+
   DatabaseService({required this.uid});
 
   // collection reference
@@ -29,9 +30,42 @@ class DatabaseService {
     });
   }
 
+  Future createUser(String name) async {
+    return await userCollection.doc(uid).set({'name': name, 'balance': 0.0});
+  }
+
+  // ---------- CATEGORY ---------- //
+  // Update category from category collection inside the user document if the category exists or create a new one
+  Future updateCategory(Category category) async {
+    return await userCollection
+        .doc(uid)
+        .collection('categories')
+        .doc(category.name)
+        .set({
+      'name': category.name,
+      'icon': category.icon.codePoint,
+      'color': category.color.value,
+    });
+  }
+
+  // Remove category from category collection inside the user document
+  Future removeCategory(String name) async {
+    return await userCollection
+        .doc(uid)
+        .collection('categories')
+        .doc(name)
+        .delete();
+  }
+
   // ---------- BUDGETS ---------- //
   // Update budget from budget collection inside the user document if the budget exists or create a new one
   Future updateBudget(Budget budget) async {
+    // Get category document reference from category collection inside the user document
+    DocumentReference categoryRef = userCollection
+        .doc(uid)
+        .collection('categories')
+        .doc(budget.category.name);
+
     return await userCollection
         .doc(uid)
         .collection('budgets')
@@ -42,7 +76,7 @@ class DatabaseService {
       'amount': budget.amount,
       'spent': budget.spent,
       'completed': budget.completed,
-      'category': budget.category.name,
+      'category': categoryRef,
     });
   }
 
@@ -58,6 +92,12 @@ class DatabaseService {
   // ---------- MOVEMENTS ---------- //
   // Update movement from movement collection inside the user document if the movement exists or create a new one
   Future updateMovement(Movement movement) async {
+    // Get category document reference from category collection inside the user document
+    DocumentReference categoryRef = userCollection
+        .doc(uid)
+        .collection('categories')
+        .doc(movement.category.name);
+
     return await userCollection
         .doc(uid)
         .collection('movements')
@@ -66,7 +106,7 @@ class DatabaseService {
       'description': movement.description,
       'amount': movement.amount,
       'date': movement.date,
-      'category': movement.category.name,
+      'category': categoryRef,
       'type': movement.type,
     });
   }
@@ -92,7 +132,6 @@ class DatabaseService {
     try {
       name = snapshot.get('name');
       balance = snapshot.get('balance').toDouble();
-
     } catch (e) {
       print(e.toString());
     }
@@ -111,42 +150,74 @@ class DatabaseService {
     return _userDataFromSnapshot(snapshot);
   }
 
-  // ---------- BUDGETS ---------- //
-  // Get budgets from Collection
-  List<Budget> _budgetsFromCollection(QuerySnapshot snapshot) {
-
-    var budgets = snapshot.docs.map((doc) {
-
-      String name = '';
-      String description = '';
-      double amount = 0;
-      double spent = 0;
-      bool completed = false;
-      String category = Category.defaultCategory.name;
-
-      try {
-        name = doc.get('name');
-        description = doc.get('description');
-        amount = doc.get('amount');
-        spent = doc.get('spent');
-        completed = doc.get('completed');
-        category = doc.get('category');
-      } catch (e) {
-        print(e.toString());
-      }
-
-      return Budget(
-        name: name,
-        description: description,
-        amount: amount,
-        spent: spent,
-        completed: completed,
-        category: Category(name: category),
+  // ---------- CATEGORY ---------- //
+  // Get categories from Collection
+  List<Category> _categoriesFromCollection(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Category(
+        name: doc.get('name'),
+        iconCode: doc.get('icon'),
+        colorValue: doc.get('color'),
       );
     }).toList();
+  }
 
+  // Get categories stream
+  Stream<List<Category>> get categories {
+    return userCollection
+        .doc(uid)
+        .collection('categories')
+        .snapshots()
+        .map(_categoriesFromCollection);
+  }
 
-    return budgets;
+  // ---------- BUDGETS ---------- //
+  // Get budget from Document
+  Future<Budget> _budgetFromDoc(QueryDocumentSnapshot doc) async {
+    String name = '';
+    String description = '';
+    double amount = 0;
+    double spent = 0;
+    bool completed = false;
+    DocumentReference? categoryRef;
+    Category category = Category.defaultCategory;
+
+    try {
+      name = doc.get('name');
+      description = doc.get('description');
+      amount = doc.get('amount');
+      spent = doc.get('spent');
+      completed = doc.get('completed');
+      categoryRef = doc.get('category');
+    } catch (e) {
+      print(e.toString());
+    }
+
+    // Get category from categoryRef
+    var categoryDoc = await categoryRef!.get();
+
+    category = Category(
+      name: categoryDoc.get('name'),
+      iconCode: categoryDoc.get('icon'),
+      colorValue: categoryDoc.get('color'),
+    );
+
+    return Budget(
+      name: name,
+      description: description,
+      amount: amount,
+      spent: spent,
+      completed: completed,
+      category: category,
+    );
+  }
+
+  // Get budgets from Collection
+  Future<List<Budget>> _budgetsFromCollection(QuerySnapshot snapshot) async {
+    var resp = await Future.wait(
+        snapshot.docs.map((doc) async => await _budgetFromDoc(doc)).toList());
+
+    return resp;
   }
 
   // get budgets stream
@@ -155,39 +226,52 @@ class DatabaseService {
         .doc(uid)
         .collection('budgets')
         .snapshots()
-        .map(_budgetsFromCollection);
+        .asyncMap((snapshot) async => await _budgetsFromCollection(snapshot));
   }
 
   // ---------- MOVEMENTS ---------- //
+  // Get Movement from document
+  Future<Movement> _movementFromDoc(QueryDocumentSnapshot doc) async {
+    String description = '';
+    double amount = 0;
+    Timestamp date = Timestamp.now();
+    DocumentReference? categoryRef;
+    Category category = Category.defaultCategory;
+    String type = '';
+
+    try {
+      description = doc.get('description');
+      amount = doc.get('amount');
+      date = doc.get('date');
+      categoryRef = doc.get('category');
+      type = doc.get('type');
+    } catch (e) {
+      print(e.toString());
+    }
+
+    // Get category from categoryRef
+    var categoryDoc = await categoryRef!.get();
+
+    category = Category(
+      name: categoryDoc.get('name'),
+      iconCode: categoryDoc.get('icon'),
+      colorValue: categoryDoc.get('color'),
+    );
+
+    return Movement(
+      description: description,
+      amount: amount.toDouble(),
+      date: date.toDate(),
+      category: category,
+      type: type,
+    );
+  }
+
   // Get movements from Collection
-  List<Movement> _movementsFromCollection(QuerySnapshot snapshot) {
-
-    var resp = snapshot.docs.map((doc) {
-
-      String description = '';
-      double amount = 0;
-      Timestamp date = Timestamp.now();
-      String category = Category.defaultCategory.name;
-      String type = '';
-
-      try {
-        description = doc.get('description');
-        amount = doc.get('amount');
-        date = doc.get('date');
-        category = doc.get('category');
-        type = doc.get('type');
-      } catch (e) {
-        print(e.toString());
-      }
-
-      return Movement(
-        description: description,
-        amount: amount.toDouble(),
-        date: date.toDate(),
-        category: Category(name: category),
-        type: type,
-      );
-    }).toList();
+  Future<List<Movement>> _movementsFromCollection(
+      QuerySnapshot snapshot) async {
+    var resp = await Future.wait(
+        snapshot.docs.map((doc) async => await _movementFromDoc(doc)).toList());
 
     resp.sort((a, b) => b.date.compareTo(a.date));
     return resp;
@@ -199,6 +283,6 @@ class DatabaseService {
         .doc(uid)
         .collection('movements')
         .snapshots()
-        .map(_movementsFromCollection);
+        .asyncMap((snapshot) async => await _movementsFromCollection(snapshot));
   }
 }

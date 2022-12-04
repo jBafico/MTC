@@ -1,44 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:maneja_tus_cuentas/constants.dart';
 
 class Category {
-
-  static final Map<String, IconData> _icons = {
-    'Comida': Icons.fastfood,
-    'Transporte': Icons.directions_car,
-    'Compras': Icons.shopping_cart,
-    'Entretenimiento': Icons.movie,
-    'Salud': Icons.local_hospital,
-    'Viajes': Icons.flight,
-    'Educación': Icons.school,
-    'Pagos': Icons.attach_money,
-    'Nueva Categoría': Icons.add,
-  };
-
-  static final defaultCategory = Category(name: 'Other');
-
   static List<Category> categories = [
-    Category(name: 'Comida'),
-    Category(name: 'Transporte'),
-    Category(name: 'Compras'),
-    Category(name: 'Entretenimiento'),
-    Category(name: 'Salud'),
-    Category(name: 'Viajes'),
-    Category(name: 'Educación'),
-    Category(name: 'Pagos'),
-    // Category(name: 'Nueva Categoría'),
+    Category.withIcon(
+        name: 'Comida', icon: Icons.fastfood, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Transporte', icon: Icons.directions_car, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Compras', icon: Icons.shopping_cart, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Entretenimiento', icon: Icons.movie, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Salud', icon: Icons.local_hospital, color: kPrimaryColor),
+    Category.withIcon(name: 'Viajes', icon: Icons.flight, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Educación', icon: Icons.school, color: kPrimaryColor),
+    Category.withIcon(
+        name: 'Pagos', icon: Icons.attach_money, color: kPrimaryColor),
+    Category.withIcon(name: 'Otros', icon: Icons.category, color: kPrimaryColor),
   ];
 
-  final String name;
+  // Default category
+  static Category defaultCategory = Category.withIcon(
+      name: 'Otros', icon: Icons.category, color: kPrimaryColor);
+
+  String name;
   late IconData icon;
+  late Color color;
 
-
-  Category({required this.name}) {
-
-    if (_icons.containsKey(name)) {
-      icon = _icons[name]!;
-    } else {
-      icon = Icons.question_mark;}
+  Category(
+      {required this.name, required int iconCode, required int colorValue}) {
+    icon = IconData(iconCode, fontFamily: 'MaterialIcons');
+    color = Color(colorValue);
   }
+
+  Category.withIcon(
+      {required this.name, required this.icon, required this.color});
 
   @override
   int get hashCode => name.hashCode;

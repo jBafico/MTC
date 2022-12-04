@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Movement.dart';
 import 'package:maneja_tus_cuentas/Model/UserData.dart';
+import 'package:maneja_tus_cuentas/Screens/new_category.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
 import '../Model/Category.dart';
@@ -9,7 +9,8 @@ import '../Services/auth.dart';
 import '../constants.dart';
 
 class NewMovementScreen extends StatefulWidget {
-  const NewMovementScreen({Key? key, this.initialValue, this.movement}) : super(key: key);
+  const NewMovementScreen({Key? key, this.initialValue, this.movement})
+      : super(key: key);
 
   final double? initialValue;
   final Movement? movement;
@@ -33,15 +34,13 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
 
   @override
   void initState() {
-
-    if(widget.initialValue != null) {
+    if (widget.initialValue != null) {
       _controllerAmount.text = widget.initialValue.toString();
-    }
-    else if(widget.movement != null){
+    } else if (widget.movement != null) {
       _controllerAmount.text = (widget.movement?.amount.toString())!;
       _controllerDescription.text = (widget.movement?.description)!;
       _currentCategory = (widget.movement?.category);
-      _currentType = widget.movement?.type == "spending" ? 1  : 2;
+      _currentType = widget.movement?.type == "spending" ? 1 : 2;
     }
 
     super.initState();
@@ -102,36 +101,74 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 16, 0, 4.0),
                 alignment: Alignment.centerLeft,
-                child: DropdownButton<Category>(
-                  hint: const Text('Agregar categoria'),
-                  value: _currentCategory,
-                  icon: const Icon(Icons.add),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: kPrimaryColor),
-                  underline: Container(
-                    height: 2,
-                    color: kPrimaryColor,
-                  ),
-                  onChanged: (Category? newValue) {
-                    setState(() {
-                      _currentCategory = newValue!;
-                    });
-                  },
-                  items: Category.categories
-                      .map<DropdownMenuItem<Category>>((Category value) {
-                    return DropdownMenuItem<Category>(
-                      value: value,
-                      child: Row(
-                        children: [
-                          Icon(value.icon),
-                          const SizedBox(width: 10),
-                          Text(value.name),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
+                child: StreamBuilder<List<Category>>(
+                    stream: _databaseService.categories,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      // Categories list
+                      var categories = snapshot.data!
+                          .map<DropdownMenuItem<Category>>((Category value) {
+                        return DropdownMenuItem<Category>(
+                          value: value,
+                          child: Row(
+                            children: [
+                              Icon(value.icon),
+                              const SizedBox(width: 10),
+                              Text(value.name),
+                            ],
+                          ),
+                        );
+                      }).toList();
+
+                      // Add new category button
+                      categories.add(DropdownMenuItem<Category>(
+                        value: Category(
+                            name: "Nueva categoria",
+                            iconCode: Icons.add.codePoint,
+                            colorValue: kPrimaryColor.value),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.add),
+                            SizedBox(width: 10),
+                            Text("Nueva categoría"),
+                          ],
+                        ),
+                      ));
+
+                      return DropdownButton<Category>(
+                        hint: const Text('Agregar categoria'),
+                        value: _currentCategory,
+                        icon: const Icon(Icons.add),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: kPrimaryColor),
+                        underline: Container(
+                          height: 2,
+                          color: kPrimaryColor,
+                        ),
+                        onChanged: (Category? newValue) {
+                          if (newValue == null) {
+                            return;
+                          }
+
+                          // If the user selects the "new category" option it will open a new screen
+                          if (newValue.name == "Nueva categoria") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const NewCategory()));
+                          } else {
+                            setState(() {
+                              _currentCategory = newValue;
+                            });
+                          }
+                        },
+                        items: categories,
+                      );
+                    }),
               ),
               // Spending or income selector
               Row(
@@ -201,29 +238,29 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                     );
                     return;
                   }
-                  
+
                   try {
-                    if(widget.movement != null){
+                    if (widget.movement != null) {
                       deleteMovement();
                     }
                     // If everything is ok, add the movement to the database
                     await _databaseService.updateMovement(
                       Movement(
                         amount: double.parse(_controllerAmount.text),
-                        category: _currentCategory ?? Category.defaultCategory,
+                        category: _currentCategory!,
                         description: _controllerDescription.text,
                         type: _currentType == 1 ? 'spending' : 'income',
                         date: DateTime.now(),
                       ),
                     );
 
-
                     // Get user data
                     UserData userData = await _databaseService.getUserData();
 
                     // Update user data
-                    userData
-                        .updateBalance(double.parse(_controllerAmount.text) * (_currentType == 1 ? -1 : 1));
+                    userData.updateBalance(
+                        double.parse(_controllerAmount.text) *
+                            (_currentType == 1 ? -1 : 1));
 
                     _databaseService
                         .updateUserBalance(userData.balance)
@@ -237,9 +274,8 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                     return;
                   }
                 },
-                child: Text(widget.movement == null
-                    ? "Ingresar"
-                    : "Guardar cambios"),
+                child: Text(
+                    widget.movement == null ? "Ingresar" : "Guardar cambios"),
               ),
             ],
           ),
@@ -253,10 +289,9 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
     // Get user data
     UserData userData = await _databaseService.getUserData();
 
-    userData
-        .updateBalance((widget.movement?.amount)! * (widget.movement?.type == 'income' ? -1 : 1));
+    userData.updateBalance((widget.movement?.amount)! *
+        (widget.movement?.type == 'income' ? -1 : 1));
 
-    _databaseService
-        .updateUserBalance(userData.balance);
+    _databaseService.updateUserBalance(userData.balance);
   }
 }
