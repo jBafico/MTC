@@ -5,6 +5,8 @@ import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
 
+import '../new_category.dart';
+
 class CreateBudget extends StatefulWidget {
   const CreateBudget({Key? key, this.budget}) : super(key: key);
 
@@ -188,40 +190,78 @@ class _BudgetFormState extends State<BudgetForm> {
           ),
           const SizedBox(height: defaultPadding),
 
-          // Dropdown menu with categories
+          // Category selector
           Container(
-            padding: const EdgeInsets.fromLTRB(4.0, 0, 0, 4.0),
+            padding: const EdgeInsets.fromLTRB(0, 16, 0, 4.0),
             alignment: Alignment.centerLeft,
-            child: DropdownButton<Category>(
-              hint: const Text('Agregar categoria'),
-              value: _currentCategory,
-              icon: const Icon(Icons.add),
-              iconSize: 24,
-              elevation: 16,
-              style: const TextStyle(color: kPrimaryColor),
-              underline: Container(
-                height: 2,
-                color: kPrimaryColor,
-              ),
-              onChanged: (Category? newValue) {
-                setState(() {
-                  _currentCategory = newValue!;
-                });
-              },
-              items:
-              Category.categories.map<DropdownMenuItem<Category>>((Category value) {
-                return DropdownMenuItem<Category>(
-                  value: value,
-                  child: Row(
-                    children: [
-                      Icon(value.icon),
-                      const SizedBox(width: 10),
-                      Text(value.name),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+            child: StreamBuilder<List<Category>>(
+                stream: _databaseService.categories,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  // Categories list
+                  var categories = snapshot.data!
+                      .map<DropdownMenuItem<Category>>((Category value) {
+                    return DropdownMenuItem<Category>(
+                      value: value,
+                      child: Row(
+                        children: [
+                          Icon(value.icon),
+                          const SizedBox(width: 10),
+                          Text(value.name),
+                        ],
+                      ),
+                    );
+                  }).toList();
+
+                  // Add new category button
+                  categories.add(DropdownMenuItem<Category>(
+                    value: Category(
+                        name: "Nueva categoria",
+                        iconCode: Icons.add.codePoint,
+                        colorValue: kPrimaryColor.value),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.add),
+                        SizedBox(width: 10),
+                        Text("Nueva categoría"),
+                      ],
+                    ),
+                  ));
+
+                  return DropdownButton<Category>(
+                    hint: const Text('Agregar categoria'),
+                    value: _currentCategory,
+                    icon: const Icon(Icons.add),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(color: kPrimaryColor),
+                    underline: Container(
+                      height: 2,
+                      color: kPrimaryColor,
+                    ),
+                    onChanged: (Category? newValue) {
+                      if (newValue == null) {
+                        return;
+                      }
+
+                      // If the user selects the "new category" option it will open a new screen
+                      if (newValue.name == "Nueva categoria") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NewCategory()));
+                      } else {
+                        setState(() {
+                          _currentCategory = newValue;
+                        });
+                      }
+                    },
+                    items: categories,
+                  );
+                }),
           ),
 
           Hero(
@@ -299,7 +339,7 @@ class _BudgetFormState extends State<BudgetForm> {
 
                   widget.budget!.name = _controllerName.text;
                   widget.budget!.description = _controllerDescription.text;
-                  widget.budget!.category = _currentCategory?? Category.defaultCategory;
+                  widget.budget!.category = _currentCategory!;
 
                   await _databaseService
                       .updateBudget(widget.budget!)
