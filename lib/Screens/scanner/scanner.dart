@@ -107,15 +107,19 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
 
                       double possibleTotal = 0;
+                      RegExp exp = RegExp("[0-9]+[,\.]{1}[0-9]{2}");
                       for (TextBlock block in recognizedText.blocks) {
+                        debugPrint("[BLOCK]: ${block.text}");
                         for (TextLine line in block.lines) {
                           debugPrint("[LINE]: ${line.text}");
                           for (TextElement element in line.elements) {
                             debugPrint("[ELEMENT]: ${element.text}");
                             // find the max double value in the ticket
-                            if(element.text.contains(RegExp("[0-9]+[,\.]{1}[0-9]{2}")) && double.tryParse(element.text.replaceAll(',', '.')) != null)  {
-                              double aux = double.parse(element.text.replaceAll(',', '.'));
-                              if(possibleTotal < aux) {
+                            String? str = exp.stringMatch(element.text);
+                            if(str != null)  {
+                              debugPrint("[NUMBER]: $str");
+                              double? aux = double.tryParse(str.replaceAll(',', '.'));
+                              if(aux != null && possibleTotal < aux) {
                                 possibleTotal = aux;
                               }
                             }
