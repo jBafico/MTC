@@ -7,8 +7,6 @@ import '../../Model/Budget.dart';
 import '../../Model/UserData.dart';
 import '../../Services/auth.dart';
 import '../Components/Cards/budget_card.dart';
-import '../notifications/notifications.dart';
-import '../scanner/scannerView.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -68,19 +66,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text(
-                'Tus ahorros',
+            children: const <Widget>[
+              Text(
+                'Tu balance',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              TextButton(
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Notifications())),
-                  child: const Text('Ver Todo',
-                      style: TextStyle(color: Colors.green))),
             ],
           ),
 
@@ -89,13 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
               stream: _databaseService.userData,
               builder: (context, AsyncSnapshot<UserData> snapshot) {
                 if (snapshot.hasData) {
-                  return Text(
-                    '\$${snapshot.data!.balance}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '\$${snapshot.data!.balance}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
                   );
                 } else if (snapshot.hasError) {
                   return Text("$snapshot.error");
