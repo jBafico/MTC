@@ -46,7 +46,7 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (!snapshot.data![index].completed) {
                               return GestureDetector(
-                                onLongPress: () {
+                                onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: snapshot.data![index])));
                                 },
                                 child: Padding(
@@ -76,6 +76,7 @@ class _AchievementsState extends State<Achievements> {
                             if (snapshot.data![index].completed) {
                               return GestureDetector(
                                 onTap: () {
+                                  //TODO: @franco hacer menu popup
                                   _databaseService
                                       .removeBudget(snapshot.data![index]);
                                 },

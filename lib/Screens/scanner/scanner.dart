@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +13,12 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  late List<CameraDescription> cameras;
-  late CameraController controller;
-  bool isReady = false;
-  bool noCameraDevice = false;
-  bool controllerInitialized = false;
-  int selectedCamera = 0;
+  late List<CameraDescription> cameras; // List of the devices cameras
+  late CameraController controller;     // controller for the cameras
+  bool isReady = false;                 //
+  bool noCameraDevice = false;          //
+  bool controllerInitialized = false;   // To check if the future was resolved
+  int selectedCamera = 0;               // Back camera
 
   @override
   void initState() {
@@ -50,6 +50,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
   }
 
+
   @override
   void dispose() {
     controller.dispose();
@@ -69,6 +70,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       return null;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -160,3 +162,4 @@ class _ScannerScreenState extends State<ScannerScreen> {
         ]));
   }
 }
+
