@@ -21,17 +21,18 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  late List<BarChartData> barChartDataList;
-  late Map<String, double> pieChartDataSpending;
-  late Map<String, double> pieChartDataIncome;
+  List<BarChartData> barChartDataList = [];
+  Map<String, double> pieChartDataSpending = {};
+  Map<String, double> pieChartDataIncome = {};
 
-  late Map<String, double> pieChartAchievmentsDone;
-  late Map<String, double> pieChartAchievmentsInProgress;
-  late List<BarChartData> amountAndSpendingList;
-  late List<BarChartData> achievmentsList;
+  Map<String, double> pieChartAchievmentsDone = {};
+  Map<String, double> pieChartAchievmentsInProgress = {};
+  List<BarChartData> amountAndSpendingList = [];
+  List<BarChartData> achievmentsList = [];
 
-  bool isLoading = true;
-  late List<Widget> widgetArray;
+  bool isLoadingAchievments = true;
+  bool isLoadingHistory = true;
+  List<Widget> widgetArray = [];
   var currentScreenIndex = 0;
   List<String> titles = ["Historial", "Metas"];
 
@@ -64,6 +65,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       pieChartDataSpending = pieChartDataMapSpending;
       pieChartDataIncome = pieChartDataMapIncome;
       barChartDataList = [spendData, incomeData];
+      isLoadingHistory = false;
     });
   }
 
@@ -106,7 +108,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       achievmentsList = [totalGoals, unAchievedGoals, achievedGoals];
       amountAndSpendingList = [totalAmountData, totalSpentData];
       widgetArray = [renderHistoryScreen(), renderAchievmentsScreen()];
-      isLoading = false;
+      isLoadingAchievments = false;
     });
   }
 
@@ -181,7 +183,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (isLoadingAchievments || isLoadingHistory) {
       return const Center(child : CircularProgressIndicator());
     }
 
