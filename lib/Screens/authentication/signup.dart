@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:maneja_tus_cuentas/Model/Category.dart';
 import 'package:maneja_tus_cuentas/Screens/authentication/login.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
+
+import '../../Services/database.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -86,21 +89,28 @@ class _SignUpFormState extends State<SignUpForm> {
   
   final _users = FirebaseFirestore.instance.collection('users');
 
-  Future registerInWithEmailAndPassword() async {
+  Future<bool> registerInWithEmailAndPassword() async {
     try {
       await _auth.registerWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text, _controllerName.text);
 
-      final userDoc = _users.doc(_auth.currentUser!.uid);
+      final databaseService = DatabaseService(uid: _auth.currentUser!.uid);
 
-      final data = {
-        'name': _controllerName.text,
-      };
+      // Initialize user data
+      databaseService.createUser(_controllerName.text);
 
-      await userDoc.set(data);
+      // Initialize default categories
+      for (var category in Category.categories) {
+        databaseService.updateCategory(category);
+      }
+
+      return true;
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
       });
+
+      return false;
     }
   }
 
@@ -185,13 +195,16 @@ class _SignUpFormState extends State<SignUpForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
-                await registerInWithEmailAndPassword().then((value) => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) {
-                        return const RegisterConfirmation();
-                      })
-                ));
+                await registerInWithEmailAndPassword().then((success) => {
+                  if (success) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterConfirmation(),
+                      ),
+                    )
+                  }
+                });
               },
               child: Text(
                 "Sign Up".toUpperCase(),
@@ -286,7 +299,7 @@ class RegisterConfirmation extends StatelessWidget {
 
                 ElevatedButton(
                     onPressed: () =>
-                        Navigator.popAndPushNamed(context, "/widgetTree"),
+                        Navigator.of(context).popUntil((route) => route.isFirst),
                     // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ButtonStyle(
                       backgroundColor:
