@@ -89,6 +89,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   alignment: AlignmentDirectional.bottomCenter,
                   child: InkWell(
                     onTap: () async {
+                      await controller.setFlashMode(FlashMode.off);
                       XFile? rawImage = await takePicture();
 
                       if (rawImage == null) {
