@@ -23,8 +23,6 @@ class Achievements extends StatefulWidget {
 class _AchievementsState extends State<Achievements> {
   final int _cantTabs = 2;
 
-  String valueText = "";
-  String codeDialog = "";
   final TextEditingController _textFieldController = TextEditingController();
 
   final DatabaseService _databaseService =
@@ -91,13 +89,7 @@ class _AchievementsState extends State<Achievements> {
                                 onTap: () {
                                   showDialog(
                                     context: context,
-                                    builder: (BuildContext context) => _buildAddMoneyDialog(context, snapshot.data![index]),
-                                  );
-                                },
-                                onLongPress: () async {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) => _buildPopupDialog(context, snapshot.data![index]),
+                                    builder: (BuildContext context) => _buildDeleteDialog(context, snapshot.data![index]),
                                   );
                                 },
                                 child: Padding(
@@ -127,6 +119,21 @@ class _AchievementsState extends State<Achievements> {
                               builder: (context) => const CreateBudget()));
                     },
                     color: Colors.white))));
+  }
+
+  Future<void> updateBudget(Budget budget) async {
+    await _databaseService.removeBudget(budget);
+
+      try {
+        budget
+            .updateSpent(double.parse(_textFieldController.text));
+      } on FormatException {
+        // TODO: manejo de errores
+      }
+
+      await _databaseService
+          .updateBudget(budget)
+          .then((value) => Navigator.pop(context));
   }
 
   Widget _buildPopupDialog(BuildContext context, Budget budget) {
@@ -176,7 +183,7 @@ class _AchievementsState extends State<Achievements> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const <Widget>[
-          Text("¿Deseas eliminar esta meta? Todos los movimientos asociados se eliminarán. Esta acción no se puede deshacer."),
+          Text("¿Deseas eliminar esta meta? Esta acción no se puede deshacer."),
         ],
       ),
       actions: <Widget>[
@@ -209,17 +216,12 @@ class _AchievementsState extends State<Achievements> {
 
   Widget _buildAddMoneyDialog(BuildContext context, Budget budget) {
     return AlertDialog(
-      title: Text('Destinar dinero a meta'),
+      title: const Text('Destinar dinero a meta'),
       content: TextFormField(
         decoration: const InputDecoration(
           hintText: 'Ingrese el monto',
         ),
         keyboardType: TextInputType.number,
-        onChanged: (value) {
-          setState(() {
-            valueText = value;
-          });
-        },
         controller: _textFieldController,
       ),
       actions: <Widget>[
@@ -243,8 +245,8 @@ class _AchievementsState extends State<Achievements> {
           child: const Text('Agregar'),
           onPressed: () {
             setState(() {
-              codeDialog = valueText;
-              Navigator.pop(context);
+              updateBudget(budget);
+              _textFieldController.clear();
             });
           },
         ),

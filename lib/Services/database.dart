@@ -98,11 +98,6 @@ class DatabaseService {
         .collection('categories')
         .doc(movement.category.name);
 
-    DocumentReference budgetRef = userCollection
-        .doc(uid)
-        .collection('budgets')
-        .doc(movement.budget?.name);
-
     return await userCollection
         .doc(uid)
         .collection('movements')
@@ -113,7 +108,6 @@ class DatabaseService {
       'date': movement.date,
       'category': categoryRef,
       'type': movement.type,
-      'budget': budgetRef
     });
   }
 

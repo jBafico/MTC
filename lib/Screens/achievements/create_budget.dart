@@ -74,9 +74,6 @@ class _BudgetFormState extends State<BudgetForm> {
 
   TextEditingController _controllerDescription = TextEditingController();
 
-  // Amount of money, number controller
-  final TextEditingController _controllerAmount = TextEditingController();
-
   TextEditingController _controllerTotalAmountEdition = TextEditingController();
 
   // Category
@@ -146,41 +143,17 @@ class _BudgetFormState extends State<BudgetForm> {
 
 
           // Amount of money
-
-          widget.budget == null
-              ? Container()
-              : Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
-                  child: const Text(
-                    'Presupuesto',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  ),
-                ),
-
-          widget.budget == null
-              ? Container()
-              : TextField(
-                  controller: _controllerTotalAmountEdition,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.attach_money),
-                  ),
-                  cursorColor: kPrimaryColor,
-                ),
-          const SizedBox(height: defaultPadding),
-
           Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.fromLTRB(4.0, 8.0, 0, 4.0),
-            child: Text(
-              widget.budget == null ? 'Presupuesto' : 'Monto a destinar',
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+            padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
+            child: const Text(
+              'Presupuesto',
+              style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
+
           TextField(
-            controller: _controllerAmount,
+            controller: _controllerTotalAmountEdition,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
@@ -189,6 +162,25 @@ class _BudgetFormState extends State<BudgetForm> {
             cursorColor: kPrimaryColor,
           ),
           const SizedBox(height: defaultPadding),
+
+          // Container(
+          //   alignment: Alignment.centerLeft,
+          //   padding: const EdgeInsets.fromLTRB(4.0, 8.0, 0, 4.0),
+          //   child: Text(
+          //     widget.budget == null ? 'Presupuesto' : 'Monto a destinar',
+          //     style: const TextStyle(color: Colors.grey, fontSize: 12),
+          //   ),
+          // ),
+          // TextField(
+          //   controller: _controllerAmount,
+          //   keyboardType: TextInputType.number,
+          //   decoration: const InputDecoration(
+          //     border: OutlineInputBorder(),
+          //     suffixIcon: Icon(Icons.attach_money),
+          //   ),
+          //   cursorColor: kPrimaryColor,
+          // ),
+          // const SizedBox(height: defaultPadding),
 
           // Category selector
           Container(
@@ -279,10 +271,8 @@ class _BudgetFormState extends State<BudgetForm> {
               onPressed: () async {
 
                 // Validate form
-
                 if (_controllerName.text.isEmpty ||
-                    _controllerDescription.text.isEmpty ||
-                    (_controllerAmount.text.isEmpty && widget.budget == null)) {
+                    _controllerDescription.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Por favor, rellena todos los campos'),
@@ -307,7 +297,7 @@ class _BudgetFormState extends State<BudgetForm> {
                         Budget(
                           name: _controllerName.text,
                           description: _controllerDescription.text,
-                          amount: double.parse(_controllerAmount.text),
+                          amount: double.parse(_controllerTotalAmountEdition.text),
                           completed: false,
                           spent: 0,
                           category: _currentCategory?? Category.defaultCategory,
@@ -316,13 +306,6 @@ class _BudgetFormState extends State<BudgetForm> {
                       .then((value) => Navigator.pop(context));
                 } else {
                   await _databaseService.removeBudget(widget.budget!);
-
-                  try {
-                    widget.budget!
-                        .updateSpent(double.parse(_controllerAmount.text));
-                  } on FormatException {
-                    // TODO: manejo de errores
-                  }
 
                   try {
                     widget.budget!.amount =
