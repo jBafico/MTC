@@ -163,25 +163,6 @@ class _BudgetFormState extends State<BudgetForm> {
           ),
           const SizedBox(height: defaultPadding),
 
-          // Container(
-          //   alignment: Alignment.centerLeft,
-          //   padding: const EdgeInsets.fromLTRB(4.0, 8.0, 0, 4.0),
-          //   child: Text(
-          //     widget.budget == null ? 'Presupuesto' : 'Monto a destinar',
-          //     style: const TextStyle(color: Colors.grey, fontSize: 12),
-          //   ),
-          // ),
-          // TextField(
-          //   controller: _controllerAmount,
-          //   keyboardType: TextInputType.number,
-          //   decoration: const InputDecoration(
-          //     border: OutlineInputBorder(),
-          //     suffixIcon: Icon(Icons.attach_money),
-          //   ),
-          //   cursorColor: kPrimaryColor,
-          // ),
-          // const SizedBox(height: defaultPadding),
-
           // Category selector
           Container(
             padding: const EdgeInsets.fromLTRB(0, 16, 0, 4.0),
