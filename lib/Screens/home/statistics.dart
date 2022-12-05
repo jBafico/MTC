@@ -137,11 +137,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           dataMap: pieChartDataIncome, chartTitle: "Ingresos"));
     }
 
-    childrenArray.addAll([
-      NetworthBarChart(
-          chartDataList: barChartDataList, title: "Patrimonio Neto"),
-      const SizedBox(height: 100)
-    ]);
+    childrenArray.add(NetworthBarChart(
+        chartDataList: barChartDataList, title: "Patrimonio Neto"));
     return ListView(
       padding: const EdgeInsets.all(10),
       children: childrenArray,
@@ -170,8 +167,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       AchievmentsWorthBarChart(
         chartDataList: amountAndSpendingList,
         title: "Dinero Invertido En Metas",
-      ),
-      const SizedBox(height: 100)
+      )
     ]);
 
     return ListView(
@@ -180,11 +176,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (isLoadingAchievments || isLoadingHistory) {
-      return const Center(child : CircularProgressIndicator());
+      return Center ( child : Column( mainAxisAlignment: MainAxisAlignment.center, children: const [ Text("Cargando Estadisticas"),CircularProgressIndicator()]) );
     }
 
     return DefaultTabController(
