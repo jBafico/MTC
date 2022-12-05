@@ -18,4 +18,11 @@ class Budget {
       completed = true;
     }
   }
+
+  @override
+  bool operator == (dynamic other) =>
+      other != null && other is Budget && name == other.name && description == other.description && amount == other.amount;
+
+  @override
+  int get hashCode => name.hashCode;
 }

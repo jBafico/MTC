@@ -46,8 +46,11 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (!snapshot.data![index].completed) {
                               return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: snapshot.data![index])));
+                                onLongPress: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildPopupDialog(context, snapshot.data![index]),
+                                  );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -75,10 +78,11 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (snapshot.data![index].completed) {
                               return GestureDetector(
-                                onTap: () {
-                                  //TODO: @franco hacer menu popup
-                                  _databaseService
-                                      .removeBudget(snapshot.data![index]);
+                                onLongPress: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildPopupDialog(context, snapshot.data![index]),
+                                  );
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -107,5 +111,83 @@ class _AchievementsState extends State<Achievements> {
                               builder: (context) => const CreateBudget()));
                     },
                     color: Colors.white))));
+  }
+
+  Widget _buildPopupDialog(BuildContext context, Budget budget) {
+    return SimpleDialog(
+      title: const Text('Seleccionar opción'),
+      children: <Widget>[
+        SimpleDialogOption(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: budget))); //snapshot.data![index]
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'Editar meta',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            )
+        ),
+        SimpleDialogOption(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => _buildDeleteDialog(context, budget),
+              );
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'Eliminar meta',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 15,
+                ),
+              ),
+            )
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeleteDialog(BuildContext context, Budget budget) {
+    return AlertDialog(
+      title: const Text('Confirmar'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const <Widget>[
+          Text("¿Deseas eliminar esta meta? Todos los movimientos asociados se eliminarán. Esta acción no se puede deshacer."),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+              padding: const EdgeInsets.all(10.0),
+              textStyle: const TextStyle(fontSize: 15),
+            ),
+            child: const Text('ELIMINAR'),
+            onPressed: () async {
+              _databaseService.removeBudget(budget);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            }
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(10.0),
+            textStyle: const TextStyle(fontSize: 15),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Cerrar'),
+        ),
+      ],
+    );
   }
 }

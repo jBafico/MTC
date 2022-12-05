@@ -4,6 +4,7 @@ import 'package:maneja_tus_cuentas/Model/UserData.dart';
 import 'package:maneja_tus_cuentas/Screens/new_category.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
+import '../Model/Budget.dart';
 import '../Model/Category.dart';
 import '../Services/auth.dart';
 import '../constants.dart';
@@ -29,6 +30,7 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
   final TextEditingController _controllerAmount = TextEditingController();
 
   Category? _currentCategory;
+  Budget? _currentBudget;
 
   int _currentType = 1;
 
@@ -167,6 +169,55 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                           }
                         },
                         items: categories,
+                      );
+                    }),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 4.0),
+                alignment: Alignment.centerLeft,
+                child: StreamBuilder<List<Budget>>(
+                    stream: _databaseService.budgets,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      // Categories list
+                      var budgets = snapshot.data!
+                          .map<DropdownMenuItem<Budget>>((Budget value) {
+                        return DropdownMenuItem<Budget>(
+                          value: value,
+                          child: Row(
+                            children: [
+                              Icon(value.category.icon),
+                              const SizedBox(width: 10),
+                              Text(value.name),
+                            ],
+                          ),
+                        );
+                      }).toList();
+
+                      return DropdownButton<Budget>(
+                        hint: const Text('Agregar meta'),
+                        value: _currentBudget,
+                        icon: const Icon(Icons.add),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: kPrimaryColor),
+                        underline: Container(
+                          height: 2,
+                          color: kPrimaryColor,
+                        ),
+                        onChanged: (Budget? newValue) {
+                          if (newValue == null) {
+                            return;
+                          }
+
+                            setState(() {
+                              _currentBudget = newValue;
+                            });
+                        },
+                        items: budgets,
                       );
                     }),
               ),
