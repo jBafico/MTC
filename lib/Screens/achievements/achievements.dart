@@ -142,7 +142,7 @@ class _AchievementsState extends State<Achievements> {
       children: <Widget>[
         SimpleDialogOption(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: budget))); //snapshot.data![index]
+              Navigator.push(context, MaterialPageRoute(builder: (context) => CreateBudget(budget: budget)));
             },
             child: const Padding(
               padding: EdgeInsets.all(10),
