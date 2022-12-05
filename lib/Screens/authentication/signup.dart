@@ -15,52 +15,57 @@ class SignUpScreen extends StatefulWidget {
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+Future<bool> _onWillPop() async {
+  return false;
+}
 
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.20,
-                width: MediaQuery.of(context).size.width,
-              ),
-              SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        "Welcome!",
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                      ),
-                      const SizedBox(height: defaultPadding * 2),
-                      Row(
-                        children: const [
-                          Spacer(),
-                          Expanded(
-                            flex: 8,
-                            child: SignUpForm(),
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.20,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            "Welcome!",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24),
                           ),
-                          Spacer(),
+                          const SizedBox(height: defaultPadding * 2),
+                          Row(
+                            children: const [
+                              Spacer(),
+                              Expanded(
+                                flex: 8,
+                                child: SignUpForm(),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -86,12 +91,13 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _controllerPassword = TextEditingController();
 
   final _auth = AuthService();
-  
+
   final _users = FirebaseFirestore.instance.collection('users');
 
   Future<bool> registerInWithEmailAndPassword() async {
     try {
-      await _auth.registerWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text, _controllerName.text);
+      await _auth.registerWithEmailAndPassword(_controllerEmail.text,
+          _controllerPassword.text, _controllerName.text);
 
       final databaseService = DatabaseService(uid: _auth.currentUser!.uid);
 
@@ -104,7 +110,6 @@ class _SignUpFormState extends State<SignUpForm> {
       }
 
       return true;
-
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -196,15 +201,17 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               onPressed: () async {
                 await registerInWithEmailAndPassword().then((success) => {
-                  if (success) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterConfirmation(),
-                      ),
-                    )
-                  }
-                });
+                      if (success)
+                        {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RegisterConfirmation(),
+                            ),
+                          )
+                        }
+                    });
               },
               child: Text(
                 "Sign Up".toUpperCase(),
@@ -268,8 +275,9 @@ class RegisterConfirmation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mainTextStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
-    var secondaryTextStyle = const TextStyle(fontSize: 14,color: Colors.grey);
+    var mainTextStyle =
+        const TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
+    var secondaryTextStyle = const TextStyle(fontSize: 14, color: Colors.grey);
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -289,25 +297,28 @@ class RegisterConfirmation extends StatelessWidget {
                             textAlign: TextAlign.center, style: mainTextStyle)),
                     Container(
                       padding: const EdgeInsets.all(25),
-                      child: Text("Tu cuenta fue creada con exito.\n Presiona continuar para seguir utilizando la app", textAlign: TextAlign.center,style: secondaryTextStyle),
+                      child: Text(
+                          "Tu cuenta fue creada con exito.\n Presiona continuar para seguir utilizando la app",
+                          textAlign: TextAlign.center,
+                          style: secondaryTextStyle),
                     ),
                     Container(
                         padding: const EdgeInsets.all(50),
-                        child: Image.asset("assets/images/account_created.jpg", fit: BoxFit.cover)),
+                        child: Image.asset("assets/images/account_created.jpg",
+                            fit: BoxFit.cover)),
                   ],
                 ),
-
                 ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).popUntil((route) => route.isFirst),
+                    onPressed: () => Navigator.of(context)
+                        .popUntil((route) => route.isFirst),
                     // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
                     style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateColor.resolveWith((states) => Colors.green),
+                      backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.green),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          )),
+                        borderRadius: BorderRadius.circular(18.0),
+                      )),
                     ),
                     child: const Text("Continuar")),
               ],
@@ -316,4 +327,3 @@ class RegisterConfirmation extends StatelessWidget {
         ));
   }
 }
-

@@ -11,60 +11,64 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+Future<bool> _onWillPop() async {
+  return false;
+}
+
 class _LoginScreenState extends State<LoginScreen> {
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.40,
-                width: MediaQuery.of(context).size.width,
-                color: kPrimaryColor,
-                child: const Center(
-                  child: Image(
-                    key: Key("logo"),
-                    image: AssetImage("assets/images/logo_white.png"),
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        "Welcome!",
-                        style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          body: SingleChildScrollView(
+            child: SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.40,
+                    width: MediaQuery.of(context).size.width,
+                    color: kPrimaryColor,
+                    child: const Center(
+                      child: Image(
+                        key: Key("logo"),
+                        image: AssetImage("assets/images/logo_white.png"),
                       ),
-                      const SizedBox(height: defaultPadding * 2),
-                      Row(
-                        children: const [
-                          Spacer(),
-                          Expanded(
-                            flex: 8,
-                            child: LoginForm(),
+                    ),
+                  ),
+                  SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text(
+                            "Welcome!",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24),
                           ),
-                          Spacer(),
+                          const SizedBox(height: defaultPadding * 2),
+                          Row(
+                            children: const [
+                              Spacer(),
+                              Expanded(
+                                flex: 8,
+                                child: LoginForm(),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -78,7 +82,6 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-
   String? errorMessage = '';
 
   final TextEditingController _controllerEmail = TextEditingController();
@@ -89,7 +92,8 @@ class _LoginFormState extends State<LoginForm> {
 
   Future signInWithEmailAndPassword() async {
     try {
-      await _auth.signInWithEmailAndPassword(_controllerEmail.text, _controllerPassword.text);
+      await _auth.signInWithEmailAndPassword(
+          _controllerEmail.text, _controllerPassword.text);
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -124,7 +128,6 @@ class _LoginFormState extends State<LoginForm> {
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
-
           TextField(
             key: const Key("emailBox"),
             controller: _controllerEmail,
@@ -133,7 +136,6 @@ class _LoginFormState extends State<LoginForm> {
             ),
             cursorColor: kPrimaryColor,
           ),
-
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(4.0, 16.0, 0, 8.0),
@@ -142,7 +144,6 @@ class _LoginFormState extends State<LoginForm> {
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ),
-
           TextField(
             key: const Key("passwordBox"),
             controller: _controllerPassword,
@@ -172,7 +173,7 @@ class _LoginFormState extends State<LoginForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
-                await signInWithEmailAndPassword();//.then((value) => Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false));
+                await signInWithEmailAndPassword(); //.then((value) => Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false));
               },
               child: Text(
                 "Login".toUpperCase(),
