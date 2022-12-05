@@ -284,14 +284,13 @@ class RegisterConfirmation extends StatelessWidget {
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  height: constraints.maxHeight / 4,
-                ),
                 Column(
                   children: [
                     Container(
-                        padding: const EdgeInsets.all(25),
+                        padding: const EdgeInsets.only(top: 100, bottom: 25),
                         /* postfix exclamation mark (!) takes the expression on the left and casts it to its underlying non-nullable type. So it changes:*/
                         child: Text("Cuenta creada",
                             textAlign: TextAlign.center, style: mainTextStyle)),
@@ -308,19 +307,22 @@ class RegisterConfirmation extends StatelessWidget {
                             fit: BoxFit.cover)),
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () => Navigator.of(context)
-                        .popUntil((route) => route.isFirst),
-                    // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.green),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      )),
-                    ),
-                    child: const Text("Continuar")),
+                Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: ElevatedButton(
+                      onPressed: () => Navigator.of(context)
+                          .popUntil((route) => route.isFirst),
+                      // style: ButtonStyle(elevation: MaterialStateProperty(12.0 )),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith(
+                                (states) => Colors.green),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            )),
+                      ),
+                      child: const Text("Continuar")),
+                ),
               ],
             );
           },
