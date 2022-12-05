@@ -302,6 +302,8 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                         description: _controllerDescription.text,
                         type: _currentType == 1 ? 'spending' : 'income',
                         date: DateTime.now(),
+                        //TODO check
+                        budget: _currentBudget
                       ),
                     );
 

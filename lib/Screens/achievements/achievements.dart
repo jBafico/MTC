@@ -23,6 +23,10 @@ class Achievements extends StatefulWidget {
 class _AchievementsState extends State<Achievements> {
   final int _cantTabs = 2;
 
+  String valueText = "";
+  String codeDialog = "";
+  final TextEditingController _textFieldController = TextEditingController();
+
   final DatabaseService _databaseService =
       DatabaseService(uid: AuthService().currentUser!.uid);
 
@@ -46,6 +50,12 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (!snapshot.data![index].completed) {
                               return GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildAddMoneyDialog(context, snapshot.data![index]),
+                                  );
+                                },
                                 onLongPress: () async {
                                   showDialog(
                                     context: context,
@@ -78,6 +88,12 @@ class _AchievementsState extends State<Achievements> {
                           itemBuilder: (context, index) {
                             if (snapshot.data![index].completed) {
                               return GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildAddMoneyDialog(context, snapshot.data![index]),
+                                  );
+                                },
                                 onLongPress: () async {
                                   showDialog(
                                     context: context,
@@ -186,6 +202,51 @@ class _AchievementsState extends State<Achievements> {
             Navigator.of(context).pop();
           },
           child: const Text('Cerrar'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddMoneyDialog(BuildContext context, Budget budget) {
+    return AlertDialog(
+      title: Text('Destinar dinero a meta'),
+      content: TextFormField(
+        decoration: const InputDecoration(
+          hintText: 'Ingrese el monto',
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          setState(() {
+            valueText = value;
+          });
+        },
+        controller: _textFieldController,
+      ),
+      actions: <Widget>[
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(10.0),
+            textStyle: const TextStyle(fontSize: 15),
+          ),
+          child: const Text('Cerrar'),
+          onPressed: () {
+            setState(() {
+              Navigator.pop(context);
+            });
+          },
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.all(10.0),
+            textStyle: const TextStyle(fontSize: 15),
+          ),
+          child: const Text('Agregar'),
+          onPressed: () {
+            setState(() {
+              codeDialog = valueText;
+              Navigator.pop(context);
+            });
+          },
         ),
       ],
     );

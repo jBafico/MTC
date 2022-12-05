@@ -1,3 +1,4 @@
+import 'Budget.dart';
 import 'Category.dart';
 
 class Movement {
@@ -6,6 +7,7 @@ class Movement {
   final DateTime date;
   final Category category;
   final String type;
+  final Budget? budget;
 
-  Movement({required this.description, required this.amount, required this.date, required this.category, required this.type});
+  Movement({required this.description, required this.amount, required this.date, required this.category, required this.type, this.budget});
 }
