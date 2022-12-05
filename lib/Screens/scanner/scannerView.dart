@@ -3,8 +3,6 @@ import 'package:maneja_tus_cuentas/Screens/scanner/scanner.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';
 
-import '../Components/upper_menu.dart';
-
 class ScannerView extends StatefulWidget {
   const ScannerView(
       {Key? key,
