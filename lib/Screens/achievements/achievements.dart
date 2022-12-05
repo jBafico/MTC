@@ -134,7 +134,7 @@ class _AchievementsState extends State<Achievements> {
     await _databaseService
         .updateBudget(budget)
         .then((value) => Navigator.pop(context));
-    
+
     _textFieldController.clear();
   }
 
