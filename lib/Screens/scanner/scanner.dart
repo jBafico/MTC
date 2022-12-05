@@ -74,10 +74,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
 
   Future<bool> analyseImage() async {
+    showProgressIndicator();
     await controller.setFlashMode(FlashMode.off);
     XFile? rawImage = await takePicture();
 
     if (rawImage == null) {
+      hideProgressIndicator();
       return false;
     }
 
@@ -86,8 +88,6 @@ class _ScannerScreenState extends State<ScannerScreen> {
 
     // Get text from image
     final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
-
-
 
     double possibleTotal = 0;
     RegExp exp = RegExp("[0-9]+[,\.]{1}[0-9]{2}");
@@ -110,8 +110,9 @@ class _ScannerScreenState extends State<ScannerScreen> {
         }
       }
     }
+
+    hideProgressIndicator();
     if (mounted && possibleTotal != 0) {
-      hideProcessingDialog();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -142,9 +143,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   alignment: AlignmentDirectional.bottomCenter,
                   child: InkWell(
                     onTap: () async {
-                      showProcessingDialog();
                       await analyseImage();
-                      hideProcessingDialog();
                     },
                     child: Stack(
                       alignment: Alignment.center,
@@ -161,12 +160,12 @@ class _ScannerScreenState extends State<ScannerScreen> {
         ]));
   }
 
-  void showProcessingDialog() {
+  void showProgressIndicator() {
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       },
@@ -174,7 +173,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     dialogOpen = true;
   }
 
-  void hideProcessingDialog() {
+  void hideProgressIndicator() {
     if(dialogOpen) {
       Navigator.of(context).pop();
     }
