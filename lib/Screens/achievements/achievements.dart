@@ -124,16 +124,18 @@ class _AchievementsState extends State<Achievements> {
   Future<void> updateBudget(Budget budget) async {
     await _databaseService.removeBudget(budget);
 
-      try {
-        budget
-            .updateSpent(double.parse(_textFieldController.text));
-      } on FormatException {
-        // TODO: manejo de errores
-      }
+    try {
+      budget
+          .updateSpent(double.parse(_textFieldController.text));
+    } on FormatException {
+      // TODO: manejo de errores
+    }
 
-      await _databaseService
-          .updateBudget(budget)
-          .then((value) => Navigator.pop(context));
+    await _databaseService
+        .updateBudget(budget)
+        .then((value) => Navigator.pop(context));
+    
+    _textFieldController.clear();
   }
 
   Widget _buildPopupDialog(BuildContext context, Budget budget) {
@@ -246,7 +248,6 @@ class _AchievementsState extends State<Achievements> {
           onPressed: () {
             setState(() {
               updateBudget(budget);
-              _textFieldController.clear();
             });
           },
         ),
