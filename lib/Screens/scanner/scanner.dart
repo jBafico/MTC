@@ -19,6 +19,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
   bool noCameraDevice = false;          //
   bool controllerInitialized = false;   // To check if the future was resolved
   int selectedCamera = 0;               // Back camera
+  bool dialogOpen = false;              // Status of processing dialog
 
   @override
   void initState() {
@@ -72,6 +73,58 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
 
+  Future<bool> analyseImage() async {
+    await controller.setFlashMode(FlashMode.off);
+    XFile? rawImage = await takePicture();
+
+    if (rawImage == null) {
+      return false;
+    }
+
+    InputImage inputImage = InputImage.fromFilePath(rawImage.path);
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+
+    // Get text from image
+    final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+
+
+
+    double possibleTotal = 0;
+    RegExp exp = RegExp("[0-9]+[,\.]{1}[0-9]{2}");
+
+    for (TextBlock block in recognizedText.blocks) {
+      debugPrint("[BLOCK]: ${block.text}");
+      for (TextLine line in block.lines) {
+        debugPrint("[LINE]: ${line.text}");
+        for (TextElement element in line.elements) {
+          debugPrint("[ELEMENT]: ${element.text}");
+          // find the max double value in the ticket
+          String? str = exp.stringMatch(element.text);
+          if(str != null)  {
+            debugPrint("[NUMBER]: $str");
+            double? aux = double.tryParse(str.replaceAll(',', '.'));
+            if(aux != null && possibleTotal < aux) {
+              possibleTotal = aux;
+            }
+          }
+        }
+      }
+    }
+    if (mounted && possibleTotal != 0) {
+      hideProcessingDialog();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NewMovementScreen(
+            initialValue: possibleTotal,
+          ),
+        ),
+      );
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!controllerInitialized || !controller.value.isInitialized) {
@@ -89,54 +142,9 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   alignment: AlignmentDirectional.bottomCenter,
                   child: InkWell(
                     onTap: () async {
-                      await controller.setFlashMode(FlashMode.off);
-                      XFile? rawImage = await takePicture();
-
-                      if (rawImage == null) {
-                        return;
-                      }
-
-                      InputImage inputImage =
-                          InputImage.fromFilePath(rawImage.path);
-                      final textRecognizer =
-                          TextRecognizer(script: TextRecognitionScript.latin);
-
-                      // Get text from image
-                      final RecognizedText recognizedText =
-                          await textRecognizer.processImage(inputImage);
-
-
-
-                      double possibleTotal = 0;
-                      RegExp exp = RegExp("[0-9]+[,\.]{1}[0-9]{2}");
-                      for (TextBlock block in recognizedText.blocks) {
-                        debugPrint("[BLOCK]: ${block.text}");
-                        for (TextLine line in block.lines) {
-                          debugPrint("[LINE]: ${line.text}");
-                          for (TextElement element in line.elements) {
-                            debugPrint("[ELEMENT]: ${element.text}");
-                            // find the max double value in the ticket
-                            String? str = exp.stringMatch(element.text);
-                            if(str != null)  {
-                              debugPrint("[NUMBER]: $str");
-                              double? aux = double.tryParse(str.replaceAll(',', '.'));
-                              if(aux != null && possibleTotal < aux) {
-                                possibleTotal = aux;
-                              }
-                            }
-                          }
-                        }
-                      }
-                      if (mounted && possibleTotal != 0) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewMovementScreen(
-                              initialValue: possibleTotal,
-                            ),
-                          ),
-                        );
-                      }
+                      showProcessingDialog();
+                      await analyseImage();
+                      hideProcessingDialog();
                     },
                     child: Stack(
                       alignment: Alignment.center,
@@ -151,6 +159,26 @@ class _ScannerScreenState extends State<ScannerScreen> {
             ),
           )
         ]));
+  }
+
+  void showProcessingDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    dialogOpen = true;
+  }
+
+  void hideProcessingDialog() {
+    if(dialogOpen) {
+      Navigator.of(context).pop();
+    }
+    dialogOpen = false;
   }
 }
 
