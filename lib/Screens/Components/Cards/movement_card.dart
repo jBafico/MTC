@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maneja_tus_cuentas/Model/Movement.dart';
-import 'package:maneja_tus_cuentas/Services/database.dart';
 import 'package:maneja_tus_cuentas/constants.dart';
-
-import '../../../Model/UserData.dart';
-import '../../../Services/auth.dart';
 
 class MovementCard extends StatelessWidget {
   final Movement movement;

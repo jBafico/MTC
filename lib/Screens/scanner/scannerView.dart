@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:maneja_tus_cuentas/Model/Budget.dart';
-import 'package:maneja_tus_cuentas/Screens/Components/Cards/budget_card.dart';
-import 'package:maneja_tus_cuentas/Screens/achievements/create_budget.dart';
 import 'package:maneja_tus_cuentas/Screens/scanner/scanner.dart';
 import 'package:maneja_tus_cuentas/Services/auth.dart';
 import 'package:maneja_tus_cuentas/Services/database.dart';

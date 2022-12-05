@@ -72,10 +72,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             if (snapshot.data![index].type == 'income') {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MovementCard(
-                                    movement: snapshot.data![index]),
+                              return GestureDetector(
+                                onLongPress: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildPopupDialog(context, snapshot.data![index]),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child:
+                                  MovementCard(movement: snapshot.data![index]),
+                                ),
                               );
                             } else {
                               return Container();
@@ -96,10 +104,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             if (snapshot.data![index].type == 'spending') {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: MovementCard(
-                                    movement: snapshot.data![index]),
+                              return GestureDetector(
+                                onLongPress: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => _buildPopupDialog(context, snapshot.data![index]),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child:
+                                  MovementCard(movement: snapshot.data![index]),
+                                ),
                               );
                             } else {
                               return Container();
