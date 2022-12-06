@@ -44,7 +44,6 @@ class DatabaseService {
         .set({
       'name': category.name,
       'icon': category.icon.codePoint,
-      'color': category.color.value,
     });
   }
 
@@ -157,7 +156,6 @@ class DatabaseService {
       return Category(
         name: doc.get('name'),
         iconCode: doc.get('icon'),
-        colorValue: doc.get('color'),
       );
     }).toList();
   }
@@ -199,7 +197,6 @@ class DatabaseService {
     category = Category(
       name: categoryDoc.get('name'),
       iconCode: categoryDoc.get('icon'),
-      colorValue: categoryDoc.get('color'),
     );
 
     return Budget(
@@ -255,7 +252,6 @@ class DatabaseService {
     category = Category(
       name: categoryDoc.get('name'),
       iconCode: categoryDoc.get('icon'),
-      colorValue: categoryDoc.get('color'),
     );
 
     return Movement(

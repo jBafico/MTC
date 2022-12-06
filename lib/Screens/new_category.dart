@@ -52,10 +52,8 @@ class _NewCategoryState extends State<NewCategory> {
     }
 
     try {
-      var category = Category(
-          name: _nameController.text,
-          iconCode: _icon.codePoint,
-          colorValue: Colors.blue.value);
+      var category =
+          Category(name: _nameController.text, iconCode: _icon.codePoint);
 
       _databaseService.updateCategory(category);
 

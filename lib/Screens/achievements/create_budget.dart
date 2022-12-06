@@ -25,7 +25,8 @@ class _CreateBudgetState extends State<CreateBudget> {
         child: Column(
           children: <Widget>[
             SizedBox(
-              height: MediaQuery.of(context).size.height * (widget.budget == null ? 0.1 : 0.05),
+              height: MediaQuery.of(context).size.height *
+                  (widget.budget == null ? 0.1 : 0.05),
               width: MediaQuery.of(context).size.width,
             ),
             Column(
@@ -87,7 +88,7 @@ class _BudgetFormState extends State<BudgetForm> {
     // TODO: implement initState
     _controllerName = TextEditingController(
         text:
-        widget.budget == null ? _controllerName.text : widget.budget!.name);
+            widget.budget == null ? _controllerName.text : widget.budget!.name);
     _controllerDescription = TextEditingController(
         text: widget.budget == null
             ? _controllerDescription.text
@@ -98,9 +99,8 @@ class _BudgetFormState extends State<BudgetForm> {
             ? _controllerTotalAmountEdition.text
             : "${widget.budget!.amount}");
 
-    _currentCategory = widget.budget == null
-        ? _currentCategory
-        : widget.budget!.category;
+    _currentCategory =
+        widget.budget == null ? _currentCategory : widget.budget!.category;
     super.initState();
   }
 
@@ -108,7 +108,6 @@ class _BudgetFormState extends State<BudgetForm> {
   Widget build(BuildContext context) {
     return Form(
       child: Column(
-
         children: [
           Container(
             alignment: Alignment.centerLeft,
@@ -140,7 +139,6 @@ class _BudgetFormState extends State<BudgetForm> {
             ),
             cursorColor: kPrimaryColor,
           ),
-
 
           // Amount of money
           Container(
@@ -192,9 +190,9 @@ class _BudgetFormState extends State<BudgetForm> {
                   // Add new category button
                   categories.add(DropdownMenuItem<Category>(
                     value: Category(
-                        name: "Nueva categoria",
-                        iconCode: Icons.add.codePoint,
-                        colorValue: kPrimaryColor.value),
+                      name: "Nueva categoria",
+                      iconCode: Icons.add.codePoint,
+                    ),
                     child: Row(
                       children: const [
                         Icon(Icons.add),
@@ -250,7 +248,6 @@ class _BudgetFormState extends State<BudgetForm> {
                     Size(MediaQuery.of(context).size.width, 40)),
               ),
               onPressed: () async {
-
                 // Validate form
                 if (_controllerName.text.isEmpty ||
                     _controllerDescription.text.isEmpty) {
@@ -278,10 +275,12 @@ class _BudgetFormState extends State<BudgetForm> {
                         Budget(
                           name: _controllerName.text,
                           description: _controllerDescription.text,
-                          amount: double.parse(_controllerTotalAmountEdition.text),
+                          amount:
+                              double.parse(_controllerTotalAmountEdition.text),
                           completed: false,
                           spent: 0,
-                          category: _currentCategory?? Category.defaultCategory,
+                          category:
+                              _currentCategory ?? Category.defaultCategory,
                         ),
                       )
                       .then((value) => Navigator.pop(context));

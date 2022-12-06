@@ -4,39 +4,37 @@ import 'package:maneja_tus_cuentas/constants.dart';
 class Category {
   static List<Category> categories = [
     Category.withIcon(
-        name: 'Comida', icon: Icons.fastfood, color: kPrimaryColor),
+        name: 'Comida', icon: Icons.fastfood),
     Category.withIcon(
-        name: 'Transporte', icon: Icons.directions_car, color: kPrimaryColor),
+        name: 'Transporte', icon: Icons.directions_car),
     Category.withIcon(
-        name: 'Compras', icon: Icons.shopping_cart, color: kPrimaryColor),
+        name: 'Compras', icon: Icons.shopping_cart),
     Category.withIcon(
-        name: 'Entretenimiento', icon: Icons.movie, color: kPrimaryColor),
+        name: 'Entretenimiento', icon: Icons.movie),
     Category.withIcon(
-        name: 'Salud', icon: Icons.local_hospital, color: kPrimaryColor),
-    Category.withIcon(name: 'Viajes', icon: Icons.flight, color: kPrimaryColor),
+        name: 'Salud', icon: Icons.local_hospital),
+    Category.withIcon(name: 'Viajes', icon: Icons.flight),
     Category.withIcon(
-        name: 'Educación', icon: Icons.school, color: kPrimaryColor),
+        name: 'Educación', icon: Icons.school),
     Category.withIcon(
-        name: 'Pagos', icon: Icons.attach_money, color: kPrimaryColor),
-    Category.withIcon(name: 'Otros', icon: Icons.category, color: kPrimaryColor),
+        name: 'Pagos', icon: Icons.attach_money),
+    Category.withIcon(name: 'Otros', icon: Icons.category),
   ];
 
   // Default category
   static Category defaultCategory = Category.withIcon(
-      name: 'Otros', icon: Icons.category, color: kPrimaryColor);
+      name: 'Otros', icon: Icons.category);
 
   String name;
   late IconData icon;
-  late Color color;
 
   Category(
-      {required this.name, required int iconCode, required int colorValue}) {
+      {required this.name, required int iconCode}) {
     icon = IconData(iconCode, fontFamily: 'MaterialIcons');
-    color = Color(colorValue);
   }
 
   Category.withIcon(
-      {required this.name, required this.icon, required this.color});
+      {required this.name, required this.icon});
 
   @override
   int get hashCode => name.hashCode;

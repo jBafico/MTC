@@ -126,9 +126,9 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
                       // Add new category button
                       categories.add(DropdownMenuItem<Category>(
                         value: Category(
-                            name: "Nueva categoria",
-                            iconCode: Icons.add.codePoint,
-                            colorValue: kPrimaryColor.value),
+                          name: "Nueva categoria",
+                          iconCode: Icons.add.codePoint,
+                        ),
                         child: Row(
                           children: const [
                             Icon(Icons.add),
