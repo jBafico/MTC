@@ -241,7 +241,7 @@ class _NewMovementScreenState extends State<NewMovementScreen> {
 
                   try {
                     if (widget.movement != null) {
-                      deleteMovement();
+                      await deleteMovement();
                     }
                     // If everything is ok, add the movement to the database
                     await _databaseService.updateMovement(
