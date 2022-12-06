@@ -16,6 +16,7 @@ import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({Key? key}) : super(key: key);
 
+
   @override
   State<StatisticsScreen> createState() => _StatisticsScreenState();
 }
@@ -35,6 +36,15 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   List<Widget> widgetArray = [];
   var currentScreenIndex = 0;
   List<String> titles = ["Historial", "Metas"];
+
+
+  @override
+  void setState(fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+  }
+
 
   final DatabaseService _databaseService =
       DatabaseService(uid: AuthService().currentUser!.uid);

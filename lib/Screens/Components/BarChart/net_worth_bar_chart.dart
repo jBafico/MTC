@@ -38,7 +38,6 @@ class _BarChartState extends State<NetworthBarChart> {
 
   bool dataVisible = false;
 
-
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
@@ -49,7 +48,7 @@ class _BarChartState extends State<NetworthBarChart> {
         primaryXAxis: CategoryAxis(),
         series: <ChartSeries>[
           ColumnSeries<BarChartData, dynamic>(
-            //ancho de columna es inversamente proporcional al spacing
+              //ancho de columna es inversamente proporcional al spacing
               spacing: 0.7,
               dataSource: widget.chartDataList,
               xValueMapper: (data, _) => data.category,
