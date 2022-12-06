@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        '\$${snapshot.data!.balance}',
+                        '\$${snapshot.data!.balance.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 30.0,
