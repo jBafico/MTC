@@ -148,6 +148,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       children: <Widget>[
         SimpleDialogOption(
           onPressed: () {
+            Navigator.of(context).pop();
             Navigator.push(context, MaterialPageRoute(builder: (context) => NewMovementScreen(movement: movement))); //snapshot.data![index]
           },
           child: const Padding(
