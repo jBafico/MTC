@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           StreamBuilder<UserData>(
               stream: _databaseService.userData,
               builder: (context, snapshot) {
-                _balanceController.text = snapshot.data?.balance.toString() ?? '';
+                _balanceController.text = snapshot.data?.balance.toStringAsFixed(2) ?? '';
 
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
