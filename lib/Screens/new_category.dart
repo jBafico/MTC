@@ -68,101 +68,84 @@ class _NewCategoryState extends State<NewCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Crear categoria',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 36),
-              ),
-            ),
-
-            // Nombre
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Nombre',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: const Text('Nueva categoria'),
+        backgroundColor: Colors.grey.shade50,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      body: Form(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Nombre
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Nombre',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-            ),
 
-            // Field to change name
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: _nameController,
+              // Field to change name
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: 'Ingrese el nombre',
+                  ),
+                  controller: _nameController,
+                ),
               ),
-            ),
 
-            // Icon
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Icono',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              // Icon
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Icono',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-            ),
 
-            // Icon selector
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                icon: Icon(_icon),
-                onPressed: _showIconPickerDialog,
-              ),
-            ),
-
-            // Color
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Color',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              // Icon selector
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(_icon),
+                    onPressed: _showIconPickerDialog,
                   ),
                 ),
               ),
-            ),
 
-            // Color selector
-            // TODO : hacer esto
+              // Button to save changes
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await _createCategory();
 
-            // Button to save changes
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  await _createCategory();
-
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(_message),
-                      ),
-                    );
-                  }
-                },
-                child: const Text('Crear'),
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(_message),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Crear'),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
